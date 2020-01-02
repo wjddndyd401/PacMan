@@ -1,6 +1,6 @@
-*/Library/
-*/Logs/
-*/obj/
-*/.vs/
-*/Temp/
+*Library/
+*Logs/
+*obj/
+*.vs/
+*Temp/
 *.csproj
