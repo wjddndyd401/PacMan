@@ -36,7 +36,7 @@ public class GameManager : MonoBehaviour
 		{
 			for (int j = 0; j < tiles.GetLength(1); j++)
 			{
-				Vector3 position = new Vector3(j - tiles.GetLength(1) / 2.0f + 0.5f, i - tiles.GetLength(0) / 2.0f + 0.5f, 0);
+				Vector3 position = new Vector3(j - tiles.GetLength(1) / 2.0f + 0.5f, -i + tiles.GetLength(0) / 2.0f - 0.5f, 0);
 				SpriteRenderer sprite = Instantiate(tilePrefab);
 
 				sprite.transform.SetParent(tileMapBackground.transform);
@@ -57,7 +57,7 @@ public class GameManager : MonoBehaviour
 			int newY = (int)Global.direction[i].y + y;
 
 			bool isOutOfIndex = newX < 0 || newX >= tiles.GetLength(1) || newY < 0 || newY >= tiles.GetLength(0);
-			if (!isOutOfIndex && tiles[newY, newX] == Tile.Obstacle)
+			if (isOutOfIndex || tiles[newY, newX] == Tile.Obstacle)
 				isBlocked[i] = true;
 			else
 				isBlocked[i] = false;
@@ -65,14 +65,56 @@ public class GameManager : MonoBehaviour
 
 		if (tiles[y, x] == Tile.Obstacle)
 		{
-			if (isBlocked[0] && isBlocked[2] && (!isBlocked[1] || !isBlocked[3]))
+			if (isBlocked[0] && isBlocked[2] && !isBlocked[1])
 			{
 				return 73 - 44;
 			}
-			else if (isBlocked[1] && isBlocked[3] && (!isBlocked[0] || !isBlocked[2]))
+			else if (isBlocked[0] && isBlocked[2] && !isBlocked[3])
+			{
+				return 72 - 44;
+			}
+			else if (!isBlocked[0] && isBlocked[1] && isBlocked[3])
 			{
 				return 62 - 44;
+			} else if(isBlocked[1] && !isBlocked[2] && isBlocked[3])
+			{
+				return 68 - 44;
 			}
+			else if (isBlocked[0] && isBlocked[1] && !isBlocked[2] && !isBlocked[3])
+			{
+				return 82 - 44;
+			}
+			else if (isBlocked[0] && !isBlocked[1] && !isBlocked[2] && isBlocked[3])
+			{
+				return 83 - 44;
+			}
+			else if (!isBlocked[0] && isBlocked[1] && isBlocked[2] && !isBlocked[3])
+			{
+				return 84 - 44;
+			}
+			else if (!isBlocked[0] && !isBlocked[1] && isBlocked[2] && isBlocked[3])
+			{
+				return 85 - 44;
+            }
+            else if (isBlocked[0] && isBlocked[1] && isBlocked[2] && isBlocked[3])
+            {
+                if (x + 1 < tiles.GetLength(1) && y + 1 < tiles.GetLength(0) && !(tiles[y + 1, x + 1] == Tile.Obstacle))
+                    return 87 - 44;
+                else if (x + 1 < tiles.GetLength(1) && y > 0 && !(tiles[y - 1, x + 1] == Tile.Obstacle))
+                    return 89 - 44;
+                else if (x > 0 && y + 1 < tiles.GetLength(0) && !(tiles[y + 1, x - 1] == Tile.Obstacle))
+                    return 86 - 44;
+                else if (x > 0 && y > 0 && !(tiles[y - 1, x - 1] == Tile.Obstacle))
+                    return 88 - 44;
+            }
+        }
+		else if (tiles[y, x] == Tile.Cookie)
+		{
+			return 1;
+		}
+		else if(tiles[y, x] == Tile.PCookie)
+		{
+			return 2;
 		}
 		return 0;
 	}
