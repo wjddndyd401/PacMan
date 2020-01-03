@@ -9,3 +9,5 @@
 1시 지역 - 12시 or 3시
 11시 지역 - 12시 or 9시
 .....
+
+https://gameinternals.com/understanding-pac-man-ghost-behavior
