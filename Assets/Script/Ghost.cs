@@ -4,33 +4,59 @@ using UnityEngine;
 
 public class Ghost : MonoBehaviour
 {
-	int directionIndex;
+	Direction direction;
 	float directionChangeTime;
 	Animator animator;
+	[SerializeField] float speed = 1.0f;
+
+	Vector2Int targetPosition;
+	Vector2Int currentPosition;
 
 	private void Awake()
 	{
-		directionIndex = 0;
+		direction = Direction.Right;
 		animator = GetComponent<Animator>();
 	}
 
 	void Start()
     {
 		directionChangeTime = Time.time;
+
+		Vector3 position = transform.position;
+		currentPosition = new Vector2Int(Mathf.RoundToInt(position.x), Mathf.RoundToInt(position.y));
+		position.x = currentPosition.x;
+		position.y = currentPosition.y;
+		transform.position = position;
 	}
 
     void Update()
-    {
+	{
 		Vector2 position = transform.position;
-		position += Global.direction[directionIndex] * Time.deltaTime;
-		transform.position = position;
-	
-        if(Time.time >= directionChangeTime)
+
+		if (position.Approximately(currentPosition))
 		{
-			directionIndex = Random.Range(0, (int)Direction.End);
-			animator.SetFloat("MoveX", Global.direction[directionIndex].x);
-			animator.SetFloat("MoveY", Global.direction[directionIndex].y);
-			directionChangeTime = Time.time + 1.0f;
+			while (true)
+			{
+				Direction newDirection = (Direction)Random.Range(0, (int)Direction.End);
+
+				Vector2Int newTarget = Vector2Int.zero;
+				newTarget.x = currentPosition.x + (int)Global.direction[(int)newDirection].x;
+				newTarget.y = currentPosition.y + (int)Global.direction[(int)newDirection].y;
+
+				if (!GameManager.Instance.IsObstacle(newTarget.x, newTarget.y))
+				{
+					direction = newDirection;
+					targetPosition = newTarget;
+					break;
+				}
+			}
+		}
+
+		position = Vector2.MoveTowards(position, targetPosition, Time.deltaTime * speed);
+		transform.position = position;
+		if (position.Approximately(targetPosition))
+		{
+			currentPosition = targetPosition;
 		}
     }
 }
