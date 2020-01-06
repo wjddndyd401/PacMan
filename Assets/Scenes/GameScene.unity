@@ -221,6 +221,8 @@ MonoBehaviour:
   - {fileID: 993095046}
   - {fileID: 1150502711}
   - {fileID: 1136671005}
+  cookiePrefab: {fileID: -9151126336499525256, guid: acaa78c69e7bae3498659655e36ec3bb,
+    type: 3}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -319,7 +321,7 @@ GameObject:
   - component: {fileID: 993095047}
   m_Layer: 0
   m_Name: Pinky
-  m_TagString: Untagged
+  m_TagString: Ghost
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -363,6 +365,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6713c68c45409f042b6b5abe77850d6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  speed: 1
 --- !u!95 &993095047
 Animator:
   serializedVersion: 3
@@ -476,7 +479,7 @@ GameObject:
   - component: {fileID: 1136671006}
   m_Layer: 0
   m_Name: Clyde
-  m_TagString: Untagged
+  m_TagString: Ghost
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -520,6 +523,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6713c68c45409f042b6b5abe77850d6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  speed: 1
 --- !u!95 &1136671006
 Animator:
   serializedVersion: 3
@@ -603,7 +607,7 @@ GameObject:
   - component: {fileID: 1150502712}
   m_Layer: 0
   m_Name: Inky
-  m_TagString: Untagged
+  m_TagString: Ghost
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -647,6 +651,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6713c68c45409f042b6b5abe77850d6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  speed: 1
 --- !u!95 &1150502712
 Animator:
   serializedVersion: 3
@@ -760,7 +765,7 @@ GameObject:
   - component: {fileID: 1398371326}
   m_Layer: 0
   m_Name: Blinky
-  m_TagString: Untagged
+  m_TagString: Ghost
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -804,6 +809,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6713c68c45409f042b6b5abe77850d6e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  speed: 1
 --- !u!95 &1398371326
 Animator:
   serializedVersion: 3
@@ -885,6 +891,7 @@ GameObject:
   - component: {fileID: 1556376173}
   - component: {fileID: 1556376175}
   - component: {fileID: 1556376174}
+  - component: {fileID: 1556376176}
   m_Layer: 0
   m_Name: Pacman
   m_TagString: Untagged
@@ -917,7 +924,7 @@ BoxCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
+  m_Size: {x: 0.5, y: 0.5, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &1556376173
 MonoBehaviour:
@@ -1000,3 +1007,19 @@ SpriteRenderer:
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!54 &1556376176
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1556376170}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0

@@ -12,6 +12,7 @@ public class Pacman : MonoBehaviour
 	private void Awake()
 	{
 		direction = Direction.Right;
+		newDirection = direction;
 		RotateToDirection();
 	}
 
@@ -36,7 +37,7 @@ public class Pacman : MonoBehaviour
 		Vector2Int newTarget = GetTargetPosition(currentPosition, newDirection);
 
 		Vector2 position = transform.position;
-		if (position.Approximately(currentPosition) && !GameManager.Instance.IsObstacle(newTarget.x, newTarget.y))
+		if (Mathf.Abs(direction - newDirection) == 2 || (position.Approximately(currentPosition) && !GameManager.Instance.IsObstacle(newTarget.x, newTarget.y)))
 		{
 			direction = newDirection;
 			targetPosition = newTarget;
@@ -108,5 +109,16 @@ public class Pacman : MonoBehaviour
 		result.x = currentPosition.x + (int)Global.direction[(int)direction].x;
 		result.y = currentPosition.y + (int)Global.direction[(int)direction].y;
 		return result;
+	}
+
+	private void OnTriggerEnter(Collider other)
+	{
+		if(other.CompareTag("Cookie"))
+		{
+			Destroy(other.gameObject);
+		} else if(other.CompareTag("Ghost"))
+		{
+			Destroy(gameObject);
+		}
 	}
 }
