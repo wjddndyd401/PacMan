@@ -84,7 +84,7 @@ public class TileMap
 		return new Vector2(tiles.GetLength(1) * 0.5f, tiles.GetLength(0) * 0.5f);
 	}
 
-	public int IndexOfObstacleSprite(Tile[,] tiles, int x, int y)
+	public AdjacentObstacle IndexOfObstacleSprite(Tile[,] tiles, int x, int y)
 	{
 		int maxX = tiles.GetLength(1);
 		int maxY = tiles.GetLength(0);
@@ -106,56 +106,48 @@ public class TileMap
 		{
 			if (isBlocked[0] && isBlocked[2] && !isBlocked[1])
 			{
-				return 73 - 44;
+				return AdjacentObstacle.UpDownLeft;
 			}
 			else if (isBlocked[0] && isBlocked[2] && !isBlocked[3])
 			{
-				return 72 - 44;
+				return AdjacentObstacle.UpRightDown;
 			}
 			else if (!isBlocked[0] && isBlocked[1] && isBlocked[3])
 			{
-				return 68 - 44;
+				return AdjacentObstacle.RightDownLeft;
 			}
 			else if (isBlocked[1] && !isBlocked[2] && isBlocked[3])
 			{
-				return 62 - 44;
+				return AdjacentObstacle.UpRightLeft;
 			}
 			else if (isBlocked[0] && isBlocked[1] && !isBlocked[2] && !isBlocked[3])
 			{
-				return 84 - 44;
+				return AdjacentObstacle.UpRight;
 			}
 			else if (isBlocked[0] && !isBlocked[1] && !isBlocked[2] && isBlocked[3])
 			{
-				return 85 - 44;
+				return AdjacentObstacle.UpLeft;
 			}
 			else if (!isBlocked[0] && isBlocked[1] && isBlocked[2] && !isBlocked[3])
 			{
-				return 82 - 44;
+				return AdjacentObstacle.RightDown;
 			}
 			else if (!isBlocked[0] && !isBlocked[1] && isBlocked[2] && isBlocked[3])
 			{
-				return 83 - 44;
+				return AdjacentObstacle.DownLeft;
 			}
 			else if (isBlocked[0] && isBlocked[1] && isBlocked[2] && isBlocked[3])
 			{
 				if (x + 1 < maxX && y + 1 < maxY && !(tiles[y + 1, x + 1] == Tile.Obstacle))
-					return 89 - 44;
+					return AdjacentObstacle.ExceptRightup;
 				else if (x + 1 < maxX && y > 0 && !(tiles[y - 1, x + 1] == Tile.Obstacle))
-					return 87 - 44;
+					return AdjacentObstacle.ExceptRightdown;
 				else if (x > 0 && y + 1 < maxY && !(tiles[y + 1, x - 1] == Tile.Obstacle))
-					return 88 - 44;
+					return AdjacentObstacle.ExceptLeftup;
 				else if (x > 0 && y > 0 && !(tiles[y - 1, x - 1] == Tile.Obstacle))
-					return 86 - 44;
+					return AdjacentObstacle.ExceptLeftdown;
 			}
 		}
-		else if (tiles[y, x] == Tile.Cookie)
-		{
-			return 1;
-		}
-		else if (tiles[y, x] == Tile.PCookie)
-		{
-			return 2;
-		}
-		return 0;
+		return AdjacentObstacle.None;
 	}
 }

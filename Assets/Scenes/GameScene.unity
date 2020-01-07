@@ -164,55 +164,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   tileMapBackground: {fileID: 1017258791}
-  sprites:
-  - {fileID: 6986764635195019515, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: 4063061920511473052, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: 4673158137078659933, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: 9064037868673475702, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: 4389181616444036438, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: 5792336278536169143, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: 8849481148010358003, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: 2906843250923733240, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: 8848107832038171528, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: 3391882141800023542, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: 2499882186165205906, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: -7816718669534559974, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: 8507748043133988739, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: 7623647956479550055, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: -3360612181566933909, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: 8188781536352228851, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: 5385994790622883084, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: 1484748811932619952, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: -6908525852477107164, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: 672024125074577166, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: 6738408359909127868, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: 1845838018129591722, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: -2706424945976786382, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: -5187687635592830823, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: 9002000823253285430, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: -1061357223350908985, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: -3181810730676346225, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: 1496074120462480241, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: 7021888389259104248, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: 5311507831917359242, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: 4974215514491571659, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: -4302827572162956322, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: -5076667226280777977, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: 2514042078933744532, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: 4931554643274434934, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: 631871326088480954, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: 2236375643504140773, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: 9006322852477802695, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: 6878014015018855295, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: 1103857319950265496, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: -4563310351641418110, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: -2905649622121801975, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: 2132848350958509504, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: -2112572123275380515, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: 7585139539161569001, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: -6890645534961958484, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: -894102910526447948, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - {fileID: -5555040859641867725, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
   tilePrefab: {fileID: -9151126336499525256, guid: 5bcfcbb49c7af7b419cd1f5bf7b40df9,
     type: 3}
   pacman: {fileID: 1556376173}
@@ -223,6 +174,48 @@ MonoBehaviour:
   - {fileID: 1136671005}
   cookiePrefab: {fileID: -9151126336499525256, guid: acaa78c69e7bae3498659655e36ec3bb,
     type: 3}
+  obstacleSprites:
+  - adjacentObstacleDirection: 1
+    sprite: {fileID: 5311507831917359242, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  - adjacentObstacleDirection: 2
+    sprite: {fileID: 7021888389259104248, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  - adjacentObstacleDirection: 3
+    sprite: {fileID: -6908525852477107164, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  - adjacentObstacleDirection: 4
+    sprite: {fileID: 9002000823253285430, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  - adjacentObstacleDirection: 5
+    sprite: {fileID: -4563310351641418110, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  - adjacentObstacleDirection: 6
+    sprite: {fileID: 6878014015018855295, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  - adjacentObstacleDirection: 7
+    sprite: {fileID: -2905649622121801975, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  - adjacentObstacleDirection: 8
+    sprite: {fileID: 1103857319950265496, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  - adjacentObstacleDirection: 9
+    sprite: {fileID: -6890645534961958484, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  - adjacentObstacleDirection: 10
+    sprite: {fileID: -2112572123275380515, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  - adjacentObstacleDirection: 11
+    sprite: {fileID: 2132848350958509504, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  - adjacentObstacleDirection: 12
+    sprite: {fileID: 7585139539161569001, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  - adjacentObstacleDirection: 0
+    sprite: {fileID: 6986764635195019515, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  cookie: {fileID: 4063061920511473052, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
+  pCookie: {fileID: 9064037868673475702, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -458,7 +451,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1017258791}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 10}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

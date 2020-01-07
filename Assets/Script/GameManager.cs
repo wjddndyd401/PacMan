@@ -4,14 +4,19 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+	public static GameManager Instance { get; private set; } = null;
+
 	TileMap tileMap;
 	[SerializeField] GameObject tileMapBackground = null;
-	[SerializeField] Sprite[] sprites = null;
 	[SerializeField] SpriteRenderer tilePrefab = null;
 	[SerializeField] Pacman pacman = null;
 	[SerializeField] Ghost[] ghosts = null;
 	[SerializeField] SpriteRenderer cookiePrefab = null;
-	public static GameManager Instance { get; private set; } = null;
+	[SerializeField] ObstacleSprite[] obstacleSprites = null;
+	Dictionary<AdjacentObstacle, Sprite> obstacleSpriteDicrionary = null;
+	[SerializeField] Sprite cookie = null;
+	[SerializeField] Sprite pCookie = null;
+
 	private void Awake()
 	{
 		if (Instance == null)
@@ -22,6 +27,12 @@ public class GameManager : MonoBehaviour
 		DontDestroyOnLoad(this);
 
 		tileMap = new TileMap("");
+
+		obstacleSpriteDicrionary = new Dictionary<AdjacentObstacle, Sprite>();
+		for (int i = 0; i < obstacleSprites.Length; i++)
+		{
+			obstacleSpriteDicrionary.Add(obstacleSprites[i].adjacentObstacleDirection, obstacleSprites[i].sprite);
+		}
 	}
 
 	private void Start()
@@ -52,20 +63,30 @@ public class GameManager : MonoBehaviour
 				sprite.transform.localPosition = position;
 				sprite.transform.localScale = new Vector3(1, 1, 1);
 
-				int spriteIndex = tileMap.IndexOfObstacleSprite(tiles, j, i);
-				if(spriteIndex == 1 || spriteIndex == 2)
+				if (IsObstacle(j, i))
 				{
-					sprite.sprite = sprites[0];
+					AdjacentObstacle spriteIndex = tileMap.IndexOfObstacleSprite(tiles, j, i);
+					sprite.sprite = obstacleSpriteDicrionary[spriteIndex];
+				}
+				else
+				{
+					sprite.sprite = obstacleSpriteDicrionary[AdjacentObstacle.None];
 
-					position.z = 0.1f;
-					SpriteRenderer cookie = Instantiate(cookiePrefab, position, Quaternion.identity);
-					cookie.sprite = sprites[spriteIndex];
-				} else
-				{
-					sprite.sprite = sprites[spriteIndex];
+					if (tiles[i, j] == Tile.Cookie)
+					{
+						SpriteRenderer cookieTile = Instantiate(cookiePrefab, position, Quaternion.identity);
+						cookieTile.sprite = cookie;
+					} else if(tiles[i, j] == Tile.PCookie)
+					{
+						SpriteRenderer cookieTile = Instantiate(cookiePrefab, position, Quaternion.identity);
+						cookieTile.sprite = pCookie;
+					}
 				}
 			}
 		}
+
+		PathFinder pathFinder = new PathFinder(tiles);
+		pathFinder.FindPath(21, 20, 12, 10);
 	}
 
 	public bool IsObstacle(int x, int y)

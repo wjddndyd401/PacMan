@@ -9,11 +9,16 @@ public class Pacman : MonoBehaviour
 	Vector2Int targetPosition;
 	Vector2Int currentPosition;
 	[SerializeField] float speed = 1.0f;
+	Animator animator;
+	bool isDeath;
+
 	private void Awake()
 	{
 		direction = Direction.Right;
 		newDirection = direction;
 		RotateToDirection();
+		isDeath = false;
+		animator = GetComponent<Animator>();
 	}
 
 	void Start()
@@ -27,9 +32,20 @@ public class Pacman : MonoBehaviour
 
     void Update()
 	{
-		SetDirectionByInput();
-		RotateToDirection();
-		Move();
+		if (!isDeath)
+		{
+			SetDirectionByInput();
+			RotateToDirection();
+			Move();
+		}
+		else
+		{
+			AnimatorStateInfo info = animator.GetCurrentAnimatorStateInfo(0);
+			if (info.IsName("Death") && info.normalizedTime >= 1.0f)
+			{
+				Destroy(gameObject);
+			}
+		}
 	}
 
 	public void Move()
@@ -37,7 +53,8 @@ public class Pacman : MonoBehaviour
 		Vector2Int newTarget = GetTargetPosition(currentPosition, newDirection);
 
 		Vector2 position = transform.position;
-		if (Mathf.Abs(direction - newDirection) == 2 || (position.Approximately(currentPosition) && !GameManager.Instance.IsObstacle(newTarget.x, newTarget.y)))
+		if (Global.Opposition(direction) == newDirection
+			|| (position.Approximately(currentPosition) && !GameManager.Instance.IsObstacle(newTarget.x, newTarget.y)))
 		{
 			direction = newDirection;
 			targetPosition = newTarget;
@@ -106,8 +123,8 @@ public class Pacman : MonoBehaviour
 	public Vector2Int GetTargetPosition(Vector2Int current, Direction direction)
 	{
 		Vector2Int result = Vector2Int.zero;
-		result.x = currentPosition.x + (int)Global.direction[(int)direction].x;
-		result.y = currentPosition.y + (int)Global.direction[(int)direction].y;
+		result.x = current.x + (int)Global.direction[(int)direction].x;
+		result.y = current.y + (int)Global.direction[(int)direction].y;
 		return result;
 	}
 
@@ -118,7 +135,8 @@ public class Pacman : MonoBehaviour
 			Destroy(other.gameObject);
 		} else if(other.CompareTag("Ghost"))
 		{
-			Destroy(gameObject);
+			isDeath = true;
+			animator.SetTrigger("Death");
 		}
 	}
 }
