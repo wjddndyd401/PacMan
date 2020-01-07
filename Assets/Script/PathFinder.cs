@@ -53,7 +53,7 @@ public class PathFinder
 		int y = startY;
 		Enqueue(startX, startY, -1, startX, startY, endX, endY);
 
-		while (queue.Count != 0 || (x == endX && y == endY))
+		while (queue.Count != 0 && !(x == endX && y == endY))
 		{
 			queue.Sort(delegate(Node a, Node b)
 			{
@@ -78,15 +78,17 @@ public class PathFinder
 			if (nodes[y, x].parentX == x && nodes[y, x].parentY == y)
 				break;
 			result = "(" + x + ", " + y + ")" + result;
-			x = nodes[y, x].parentX;
-			y = nodes[y, x].parentY;
+			int parentX = nodes[y, x].parentX;
+			int parentY = nodes[y, x].parentY;
+			x = parentX;
+			y = parentY;
 		}
 		Debug.Log(result);
 	}
 
 	void Enqueue(int x, int y, int g, int parentX, int parentY, int endX, int endY)
 	{
-		if (x >= 0 && y >= 0 && x < nodes.GetLength(1) && y < nodes.GetLength(1) &&
+		if (x >= 0 && y >= 0 && x < nodes.GetLength(1) && y < nodes.GetLength(0) &&
 			!nodes[y, x].isObstacle && nodes[y, x].isOpened)
 		{
 			nodes[y, x].x = x;
