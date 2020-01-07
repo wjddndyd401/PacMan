@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
 	Dictionary<AdjacentObstacle, Sprite> obstacleSpriteDicrionary = null;
 	[SerializeField] Sprite cookie = null;
 	[SerializeField] Sprite pCookie = null;
-
+	PathFinder pathFinder;
 	private void Awake()
 	{
 		if (Instance == null)
@@ -27,6 +27,7 @@ public class GameManager : MonoBehaviour
 		DontDestroyOnLoad(this);
 
 		tileMap = new TileMap("");
+		pathFinder = new PathFinder(tileMap.GetTiles());
 
 		obstacleSpriteDicrionary = new Dictionary<AdjacentObstacle, Sprite>();
 		for (int i = 0; i < obstacleSprites.Length; i++)
@@ -40,10 +41,12 @@ public class GameManager : MonoBehaviour
 		if(tileMapBackground != null)
 			PrintMap();
 
-		pacman.transform.position = new Vector3(20, 20, 0);
-		for(int i =0; i < ghosts.Length; i++)
+		pacman.transform.position = new Vector3(6, 20, 0);
+		pacman.transform.position = new Vector3(26, 29, 0);
+		for (int i =0; i < ghosts.Length; i++)
 		{
-			ghosts[i].transform.position = new Vector3(8, 8, 0);
+			ghosts[i].transform.position = new Vector3(tileMap.CenterPosition().x, tileMap.CenterPosition().y, 0);
+			ghosts[i].transform.position = new Vector3(1, 1, 0);
 		}
 
 		Camera.main.transform.position = new Vector3(tileMap.CenterPosition().x, tileMap.CenterPosition().y, Camera.main.transform.position.z);
@@ -84,13 +87,20 @@ public class GameManager : MonoBehaviour
 				}
 			}
 		}
-
-		PathFinder pathFinder = new PathFinder(tiles);
-		pathFinder.FindPath(21, 20, 12, 10);
 	}
-
 	public bool IsObstacle(int x, int y)
 	{
 		return tileMap.IsObstacle(x, y);
+	}
+
+	public Vector2Int GetNextTileToPlayer(int x, int y)
+	{
+		if (pacman != null)
+		{
+			List<Vector2Int> path = pathFinder.FindPath(x, y, (int)pacman.transform.position.x, (int)pacman.transform.position.y);
+			if (pacman != null && path.Count > 1)
+				return path[0];
+		}
+		return new Vector2Int(x, y);
 	}
 }

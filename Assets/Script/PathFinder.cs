@@ -9,7 +9,6 @@ struct Node
 	public int f;
 	public int g;
 	public int h;
-	public bool isObstacle;
 	public bool isOpened;
 	public int parentX;
 	public int parentY;
@@ -19,52 +18,46 @@ public class PathFinder
 {
 	Node[,] nodes;
 	List<Node> queue;
-
-	public PathFinder(Tile[,] tiles)
+	Tile[,] tiles;
+	public PathFinder(Tile[,] _tiles)
 	{
-		queue = new List<Node>();
+		tiles = _tiles;
 		nodes = new Node[tiles.GetLength(0), tiles.GetLength(1)];
-		for (int i = 0; i < tiles.GetLength(0); i++)
-		{
-			for (int j = 0; j < tiles.GetLength(1); j++)
-			{
-				nodes[i, j].g = -1;
-				nodes[i, j].isOpened = true;
-				nodes[i, j].isObstacle = (tiles[i, j] == Tile.Obstacle);
-			}
-		}
+		queue = new List<Node>();
+		Reset();
 	}
 
 	public void Reset()
 	{
+		queue.Clear();
 		for (int i = 0; i < nodes.GetLength(0); i++)
 		{
 			for (int j = 0; j < nodes.GetLength(1); j++)
 			{
 				nodes[i, j].g = -1;
-				nodes[i, j].isOpened = true;
+				nodes[i, j].isOpened = !(tiles[i, j] == Tile.Obstacle);
+				nodes[i, j].parentX = j;
+				nodes[i, j].parentY = i;
 			}
 		}
 	}
 
-	public void FindPath(int startX, int startY, int endX, int endY)
+	public List<Vector2Int> FindPath(int startX, int startY, int endX, int endY)
 	{
+		Reset();
+
 		int x = startX;
 		int y = startY;
 		Enqueue(startX, startY, -1, startX, startY, endX, endY);
 
-		while (queue.Count != 0 && !(x == endX && y == endY))
+		while (queue.Count != 0)
 		{
-			queue.Sort(delegate(Node a, Node b)
-			{
-				if (a.f > b.f) return 1;
-				else if (a.f < b.f) return -1;
-				return 0;
-			});
-			Node node = queue[0];
-			queue.RemoveAt(0);
+			Node node = Dequeue();
 			x = node.x; y = node.y;
 			nodes[y, x].isOpened = false;
+
+			if (x == endX && y == endY)
+				break;
 
 			Enqueue(x, y + 1, node.g, x, y, endX, endY);
 			Enqueue(x + 1, y, node.g, x, y, endX, endY);
@@ -72,25 +65,28 @@ public class PathFinder
 			Enqueue(x - 1, y, node.g, x, y, endX, endY);
 		}
 
-		string result = "";
-		while (true)
-		{						
-			if (nodes[y, x].parentX == x && nodes[y, x].parentY == y)
-				break;
-			result = "(" + x + ", " + y + ")" + result;
-			int parentX = nodes[y, x].parentX;
-			int parentY = nodes[y, x].parentY;
-			x = parentX;
-			y = parentY;
+		List<Vector2Int> result = new List<Vector2Int>();
+		if (x == endX && y == endY)
+		{
+			result.Insert(0, new Vector2Int(x, y));
+			while (true)
+			{
+				Node node = nodes[y, x];
+				if (node.parentX == x && node.parentY == y)
+					break;
+				result.Insert(0, new Vector2Int(x, y));
+				x = node.parentX;
+				y = node.parentY;
+			}
 		}
-		Debug.Log(result);
+		return result;
 	}
 
 	void Enqueue(int x, int y, int g, int parentX, int parentY, int endX, int endY)
 	{
-		if (x >= 0 && y >= 0 && x < nodes.GetLength(1) && y < nodes.GetLength(0) &&
-			!nodes[y, x].isObstacle && nodes[y, x].isOpened)
+		if (IsIndexInRange(x, y) && nodes[y, x].isOpened)
 		{
+			bool isInQueue = nodes[y, x].g >= 0;
 			nodes[y, x].x = x;
 			nodes[y, x].y = y;
 			if (nodes[y, x].g < 0 || nodes[y, x].g > g)
@@ -101,7 +97,26 @@ public class PathFinder
 			}
 			nodes[y, x].h = Mathf.Abs(endX - x) + Mathf.Abs(endY - y);
 			nodes[y, x].f = nodes[y, x].g + nodes[y, x].h;
-			queue.Add(nodes[y, x]);
+
+			int i = queue.Count;
+			while (i > 0 && queue[i - 1].f > nodes[y, x].f)
+			{
+				i--;
+			}
+			if(!isInQueue)
+				queue.Insert(i, nodes[y, x]);
 		}
+	}
+
+	Node Dequeue()
+	{
+		Node result = queue[0];
+		queue.RemoveAt(0);
+		return result;
+	}
+
+	bool IsIndexInRange(int x, int y)
+	{
+		return x >= 0 && y >= 0 && x < nodes.GetLength(1) && y < nodes.GetLength(0);
 	}
 }
