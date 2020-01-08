@@ -53,8 +53,8 @@ public class Pacman : MonoBehaviour
 		Vector2Int newTarget = GetTargetPosition(currentPosition, newDirection);
 
 		Vector2 position = transform.position;
-		if (Global.Opposition(direction) == newDirection
-			|| (position.Approximately(currentPosition) && !GameManager.Instance.IsObstacle(newTarget.x, newTarget.y)))
+		if (Global.Opposition(direction) == newDirection ||
+			(position.Approximately(currentPosition) && !GameManager.Instance.IsObstacle(newTarget.x, newTarget.y) && !GameManager.Instance.IsPrisonEntrance(newTarget.x, newTarget.y)))
 		{
 			direction = newDirection;
 			targetPosition = newTarget;
@@ -133,10 +133,18 @@ public class Pacman : MonoBehaviour
 		if(other.CompareTag("Cookie"))
 		{
 			Destroy(other.gameObject);
+			other.GetComponent<Cookie>().Collide();
 		} else if(other.CompareTag("Ghost"))
 		{
-			isDeath = true;
-			animator.SetTrigger("Death");
+			Ghost ghost = other.GetComponent<Ghost>();
+			if (ghost.CanKillPacman())
+			{
+				isDeath = true;
+				animator.SetTrigger("Death");
+			} else
+			{
+				ghost.Death();
+			}
 		}
 	}
 }

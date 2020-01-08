@@ -32,3 +32,8 @@ public struct ObstacleSprite
 	public AdjacentObstacle adjacentObstacleDirection;
 	public Sprite sprite;
 }
+
+public enum GhostState
+{
+	Normal, Vulnerable, Death
+}

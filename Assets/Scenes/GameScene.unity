@@ -214,8 +214,54 @@ MonoBehaviour:
   - adjacentObstacleDirection: 0
     sprite: {fileID: 6986764635195019515, guid: 213b11d29603ab548bb712af5f7fd32a,
       type: 3}
+  prisonSprites:
+  - adjacentObstacleDirection: 1
+    sprite: {fileID: 2906843250923733240, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  - adjacentObstacleDirection: 2
+    sprite: {fileID: 8849481148010358003, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  - adjacentObstacleDirection: 3
+    sprite: {fileID: -3360612181566933909, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  - adjacentObstacleDirection: 4
+    sprite: {fileID: 5385994790622883084, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  - adjacentObstacleDirection: 5
+    sprite: {fileID: 631871326088480954, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
+  - adjacentObstacleDirection: 6
+    sprite: {fileID: 2514042078933744532, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  - adjacentObstacleDirection: 7
+    sprite: {fileID: 4931554643274434934, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  - adjacentObstacleDirection: 8
+    sprite: {fileID: -5076667226280777977, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  - adjacentObstacleDirection: 0
+    sprite: {fileID: 6986764635195019515, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  prisonEntranceSprite: {fileID: -6372959061049211570, guid: 213b11d29603ab548bb712af5f7fd32a,
+    type: 3}
   cookie: {fileID: 4063061920511473052, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
   pCookie: {fileID: 9064037868673475702, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
+  numberSprites:
+  - {fileID: -7252163708488203492, guid: 57e95bd145037754b85bd087f311002b, type: 3}
+  - {fileID: 283267793160534324, guid: 57e95bd145037754b85bd087f311002b, type: 3}
+  - {fileID: 7896841626302299011, guid: 57e95bd145037754b85bd087f311002b, type: 3}
+  - {fileID: 5049665877055806339, guid: 57e95bd145037754b85bd087f311002b, type: 3}
+  - {fileID: 5525198984149503065, guid: 57e95bd145037754b85bd087f311002b, type: 3}
+  - {fileID: 766994125354121098, guid: 57e95bd145037754b85bd087f311002b, type: 3}
+  - {fileID: 572756692132444903, guid: 57e95bd145037754b85bd087f311002b, type: 3}
+  - {fileID: -8976659219508654433, guid: 57e95bd145037754b85bd087f311002b, type: 3}
+  - {fileID: -6148022902202946158, guid: 57e95bd145037754b85bd087f311002b, type: 3}
+  - {fileID: -5624396360761769404, guid: 57e95bd145037754b85bd087f311002b, type: 3}
+  scoreField: {fileID: 774919485}
+  highScoreField: {fileID: 520644292}
+  numberObject: {fileID: 3370903016515548595, guid: 34f286328b4217c4d94db4d2968dc491,
+    type: 3}
+  cookieScore: 10
+  pCookieScore: 50
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -298,6 +344,66 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &520644292
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 520644293}
+  m_Layer: 0
+  m_Name: HighScore
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &520644293
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 520644292}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2, y: 26, z: -2.7832031}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 10
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &774919485
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 774919486}
+  m_Layer: 0
+  m_Name: Score
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &774919486
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 774919485}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -2, y: 30, z: -2.7832031}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &993095043
 GameObject:

@@ -3,7 +3,7 @@ using System.Collections;
 
 public enum Tile
 {
-	Empty, Obstacle, Cookie, PCookie, Prison, End
+	Empty, Obstacle, Cookie, PCookie, Prison, Entrance, End
 }
 
 public class JsonMap
@@ -44,9 +44,9 @@ public class TileMap
 		"1,1,1,1,1,1,2,1,1,0,1,1,1,1,1,1,1,1,0,1,1,2,1,1,1,1,1,1," +
 		"1,1,1,1,1,1,2,1,1,0,0,0,0,0,0,0,0,0,0,1,1,2,1,1,1,1,1,1," +
 		"1,1,1,1,1,1,2,1,1,0,4,4,4,4,4,4,4,4,0,1,1,2,1,1,1,1,1,1," +
-		"1,1,1,1,1,1,2,1,1,0,4,4,4,4,4,4,4,4,0,1,1,2,1,1,1,1,1,1," +
-		"0,0,0,0,0,0,2,0,0,0,4,4,4,4,4,4,4,4,0,0,0,2,0,0,0,0,0,0," +
-		"1,1,1,1,1,1,2,1,1,0,4,4,4,4,4,4,4,4,0,1,1,2,1,1,1,1,1,1," +
+		"1,1,1,1,1,1,2,1,1,0,4,0,0,0,0,0,0,4,0,1,1,2,1,1,1,1,1,1," +
+		"0,0,0,0,0,0,2,0,0,0,4,0,0,0,0,0,0,4,0,0,0,2,0,0,0,0,0,0," +
+		"1,1,1,1,1,1,2,1,1,0,4,0,0,0,0,0,0,4,0,1,1,2,1,1,1,1,1,1," +
 		"1,1,1,1,1,1,2,1,1,0,4,4,4,5,5,4,4,4,0,1,1,2,1,1,1,1,1,1," +
 		"1,1,1,1,1,1,2,1,1,0,0,0,0,0,0,0,0,0,0,1,1,2,1,1,1,1,1,1," +
 		"1,1,1,1,1,1,2,1,1,1,1,1,0,1,1,0,1,1,1,1,1,2,1,1,1,1,1,1," +
@@ -60,13 +60,16 @@ public class TileMap
 		"1,2,1,1,1,1,2,1,1,1,1,1,2,1,1,2,1,1,1,1,1,2,1,1,1,1,2,1," +
 		"1,2,2,2,2,2,2,2,2,2,2,2,2,1,1,2,2,2,2,2,2,2,2,2,2,2,2,1," +
 		"1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]}";
+	int maxX = 0;
+	int maxY = 0;
 
- 
+
 	public TileMap(string mapFileName)
 	{
 		JsonMap jsonMap = JsonUtility.FromJson<JsonMap>(json);
 		tiles = jsonMap.FormatToTile();
-		tiles.Clone();
+		maxX = tiles.GetLength(1);
+		maxY = tiles.GetLength(0);
 	}
 
 	public Tile[,] GetTiles()
@@ -79,16 +82,23 @@ public class TileMap
 		return tiles[y, x] == Tile.Obstacle;
 	}
 
+	public bool IsPrision(int x, int y)
+	{
+		return tiles[y, x] == Tile.Prison;
+	}
+
+	public bool IsPrisonEntrance(int x, int y)
+	{
+		return tiles[y, x] == Tile.Entrance;
+	}
+
 	public Vector2 CenterPosition()
 	{
 		return new Vector2(tiles.GetLength(1) * 0.5f, tiles.GetLength(0) * 0.5f);
 	}
 
-	public AdjacentObstacle IndexOfObstacleSprite(Tile[,] tiles, int x, int y)
+	public bool[] IsAdjacentTile(Tile standard, int x, int y)
 	{
-		int maxX = tiles.GetLength(1);
-		int maxY = tiles.GetLength(0);
-
 		bool[] isBlocked = new bool[(int)Direction.End];
 		for (int i = 0; i < (int)Direction.End; i++)
 		{
@@ -96,11 +106,17 @@ public class TileMap
 			int newY = (int)Global.direction[i].y + y;
 
 			bool isOutOfIndex = newX < 0 || newX >= maxX || newY < 0 || newY >= maxY;
-			if (isOutOfIndex || tiles[newY, newX] == Tile.Obstacle)
+			if (isOutOfIndex || tiles[newY, newX] == standard)
 				isBlocked[i] = true;
 			else
 				isBlocked[i] = false;
 		}
+		return isBlocked;
+	}
+
+	public AdjacentObstacle IndexOfObstacleSprite(int x, int y)
+	{
+		bool[] isBlocked = IsAdjacentTile(Tile.Obstacle, x, y);
 
 		if (tiles[y, x] == Tile.Obstacle)
 		{
@@ -147,6 +163,41 @@ public class TileMap
 				else if (x > 0 && y > 0 && !(tiles[y - 1, x - 1] == Tile.Obstacle))
 					return AdjacentObstacle.ExceptLeftdown;
 			}
+		}
+		return AdjacentObstacle.None;
+	}
+
+	public AdjacentObstacle IndexOfPrisionSprite(int x, int y)
+	{
+		bool[] isBlocked = IsAdjacentTile(Tile.Prison, x, y);
+
+		if(y > CenterPosition().y && !isBlocked[2])
+		{
+			return AdjacentObstacle.RightDownLeft;
+		} else if(y > CenterPosition().y && isBlocked[1])
+		{
+			return AdjacentObstacle.RightDown;
+		} else if(y > CenterPosition().y && isBlocked[3])
+		{
+			return AdjacentObstacle.DownLeft;
+		}
+		else if(y < CenterPosition().y && !isBlocked[0])
+		{
+			return AdjacentObstacle.UpRightLeft;
+		}
+		else if (y < CenterPosition().y && isBlocked[1])
+		{
+			return AdjacentObstacle.UpRight;
+		}
+		else if (y < CenterPosition().y && isBlocked[3])
+		{
+			return AdjacentObstacle.UpLeft;
+		} else if(x < CenterPosition().x)
+		{
+			return AdjacentObstacle.UpRightDown;
+		} else if(x > CenterPosition().x)
+		{
+			return AdjacentObstacle.UpDownLeft;
 		}
 		return AdjacentObstacle.None;
 	}

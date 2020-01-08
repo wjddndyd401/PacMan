@@ -35,7 +35,7 @@ public class PathFinder
 			for (int j = 0; j < nodes.GetLength(1); j++)
 			{
 				nodes[i, j].g = -1;
-				nodes[i, j].isOpened = !(tiles[i, j] == Tile.Obstacle);
+				nodes[i, j].isOpened = !(tiles[i, j] == Tile.Obstacle || tiles[i, j] == Tile.Prison);
 				nodes[i, j].parentX = j;
 				nodes[i, j].parentY = i;
 			}
