@@ -77,24 +77,29 @@ public class TileMap
 		return tiles;
 	}
 
-	public bool IsObstacle(int x, int y)
+	public bool IsObstacle(Vector2Int coord)
 	{
-		return tiles[y, x] == Tile.Obstacle;
+		return tiles[coord.y, coord.x] == Tile.Obstacle;
 	}
 
-	public bool IsPrision(int x, int y)
+	public bool IsPrision(Vector2Int coord)
 	{
-		return tiles[y, x] == Tile.Prison;
+		return tiles[coord.y, coord.x] == Tile.Prison;
 	}
 
-	public bool IsPrisonEntrance(int x, int y)
+	public bool IsPrisonEntrance(Vector2Int coord)
 	{
-		return tiles[y, x] == Tile.Entrance;
+		return tiles[coord.y, coord.x] == Tile.Entrance;
 	}
 
-	public Vector2 CenterPosition()
+	public Vector2Int CenterPosition()
 	{
-		return new Vector2(tiles.GetLength(1) * 0.5f, tiles.GetLength(0) * 0.5f);
+		return new Vector2Int(tiles.GetLength(1) / 2, tiles.GetLength(0) / 2);
+	}
+
+	public Vector2Int MapSize()
+	{
+		return new Vector2Int(tiles.GetLength(1), tiles.GetLength(0));
 	}
 
 	public bool[] IsAdjacentTile(Tile standard, int x, int y)

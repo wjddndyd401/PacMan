@@ -4,14 +4,12 @@ using UnityEngine;
 
 struct Node
 {
-	public int x;
-	public int y;
+	public Vector2Int coord;
 	public int f;
 	public int g;
 	public int h;
 	public bool isOpened;
-	public int parentX;
-	public int parentY;
+	public Vector2Int parent;
 }
 
 public class PathFinder
@@ -19,10 +17,14 @@ public class PathFinder
 	Node[,] nodes;
 	List<Node> queue;
 	Tile[,] tiles;
+	int xLength, yLength;
+
 	public PathFinder(Tile[,] _tiles)
 	{
 		tiles = _tiles;
 		nodes = new Node[tiles.GetLength(0), tiles.GetLength(1)];
+		xLength = tiles.GetLength(1);
+		yLength = tiles.GetLength(0);
 		queue = new List<Node>();
 		Reset();
 	}
@@ -36,66 +38,84 @@ public class PathFinder
 			{
 				nodes[i, j].g = -1;
 				nodes[i, j].isOpened = !(tiles[i, j] == Tile.Obstacle || tiles[i, j] == Tile.Prison);
-				nodes[i, j].parentX = j;
-				nodes[i, j].parentY = i;
+				nodes[i, j].parent.x = j;
+				nodes[i, j].parent.y = i;
 			}
 		}
 	}
 
-	public List<Vector2Int> FindPath(int startX, int startY, int endX, int endY)
+	public List<Vector2Int> FindPath(Vector2Int current, Vector2Int target, Direction direction = Direction.End, bool canReturn = false)
 	{
 		Reset();
 
-		int x = startX;
-		int y = startY;
-		Enqueue(startX, startY, -1, startX, startY, endX, endY);
+		Vector2Int nodeCoord = current;
+		Enqueue(current, -1, current, target);
 
+		if (!canReturn)
+		{
+			Vector2Int behindDirection = Global.direction[(int)Global.Opposition(direction)];
+			Vector2Int behind = InGameManager.Instance.CoordInRange(current + behindDirection);
+			nodes[behind.y, behind.x].isOpened = false;
+		}
+
+		int minDistance = Mathf.Abs(current.x - target.x) + Mathf.Abs(current.y - target.y);
+		Vector2Int closestPoint = current;
 		while (queue.Count != 0)
 		{
 			Node node = Dequeue();
-			x = node.x; y = node.y;
-			nodes[y, x].isOpened = false;
+			nodeCoord = node.coord;
+			nodes[nodeCoord.y, nodeCoord.x].isOpened = false;
 
-			if (x == endX && y == endY)
+			if (nodeCoord == target)
 				break;
 
-			Enqueue(x, y + 1, node.g, x, y, endX, endY);
-			Enqueue(x + 1, y, node.g, x, y, endX, endY);
-			Enqueue(x, y - 1, node.g, x, y, endX, endY);
-			Enqueue(x - 1, y, node.g, x, y, endX, endY);
+			int tileDistance = Mathf.Abs(nodeCoord.x - target.x) + Mathf.Abs(nodeCoord.y - target.y);
+			if(minDistance > tileDistance)
+			{
+				minDistance = tileDistance;
+				closestPoint = nodeCoord;
+			}
+
+			Enqueue(new Vector2Int(nodeCoord.x, nodeCoord.y + 1), node.g, nodeCoord, target);
+			Enqueue(new Vector2Int(nodeCoord.x + 1, nodeCoord.y), node.g, nodeCoord, target);
+			Enqueue(new Vector2Int(nodeCoord.x, nodeCoord.y - 1), node.g, nodeCoord, target);
+			Enqueue(new Vector2Int(nodeCoord.x - 1, nodeCoord.y), node.g, nodeCoord, target);
 		}
 
 		List<Vector2Int> result = new List<Vector2Int>();
-		if (x == endX && y == endY)
+		if (nodeCoord == target)
 		{
-			result.Insert(0, new Vector2Int(x, y));
-			while (true)
-			{
-				Node node = nodes[y, x];
-				if (node.parentX == x && node.parentY == y)
-					break;
-				result.Insert(0, new Vector2Int(x, y));
-				x = node.parentX;
-				y = node.parentY;
-			}
+			result.Insert(0, nodeCoord);
+		} else if(closestPoint != current)
+		{
+			result.Insert(0, closestPoint);
+		}
+
+		while (result.Count > 0)
+		{
+			Node node = nodes[result[0].y, result[0].x];
+			if (node.parent == node.coord)
+				break;
+			result.Insert(0, node.parent);
 		}
 		return result;
 	}
 
-	void Enqueue(int x, int y, int g, int parentX, int parentY, int endX, int endY)
+	void Enqueue(Vector2Int coord, int g, Vector2Int parent, Vector2Int target)
 	{
-		if (IsIndexInRange(x, y) && nodes[y, x].isOpened)
+		int x = (coord.x + nodes.GetLength(1)) % nodes.GetLength(1);
+		int y = (coord.y + nodes.GetLength(0)) % nodes.GetLength(0);
+		if (IsCoordInRange(new Vector2Int(x, y)) && nodes[y, x].isOpened)
 		{
 			bool isInQueue = nodes[y, x].g >= 0;
-			nodes[y, x].x = x;
-			nodes[y, x].y = y;
+			nodes[y, x].coord.x = x;
+			nodes[y, x].coord.y = y;
 			if (nodes[y, x].g < 0 || nodes[y, x].g > g)
 			{
 				nodes[y, x].g = g + 1;
-				nodes[y, x].parentX = parentX;
-				nodes[y, x].parentY = parentY;
+				nodes[y, x].parent = parent;
 			}
-			nodes[y, x].h = Mathf.Abs(endX - x) + Mathf.Abs(endY - y);
+			nodes[y, x].h = Global.GetTileDistance(new Vector2Int(x, y), target, new Vector2Int(xLength, yLength));
 			nodes[y, x].f = nodes[y, x].g + nodes[y, x].h;
 
 			int i = queue.Count;
@@ -115,8 +135,8 @@ public class PathFinder
 		return result;
 	}
 
-	bool IsIndexInRange(int x, int y)
+	public bool IsCoordInRange(Vector2Int coord)
 	{
-		return x >= 0 && y >= 0 && x < nodes.GetLength(1) && y < nodes.GetLength(0);
+		return coord.x >= 0 && coord.y >= 0 && coord.x < nodes.GetLength(1) && coord.y < nodes.GetLength(0);
 	}
 }

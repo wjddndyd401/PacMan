@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class Ghost : MonoBehaviour
 {
-	float directionChangeTime;
+	Direction direction;
 	Animator animator;
 	SpriteRenderer spriteRenderer;
 	[SerializeField] float speed = 1.0f;
 	[SerializeField] float vulnerableDuration = 3.0f;
 	[SerializeField] float warningTime = 2.0f;
+	[SerializeField] GhostPattern pattern = GhostPattern.Pinky;
 	float aliveTime;
 
 	Vector2Int targetPosition;
@@ -17,15 +18,18 @@ public class Ghost : MonoBehaviour
 
 	GhostState state;
 
+	bool canReturn;
+
 	private void Awake()
 	{
 		animator = GetComponent<Animator>();
 		spriteRenderer = GetComponent<SpriteRenderer>();
 	}
 
-	void Start()
+	public void Init()
 	{
-		directionChangeTime = Time.time;
+		direction = Direction.Right;
+		canReturn = false;
 
 		Vector3 position = transform.position;
 		currentPosition = new Vector2Int(Mathf.RoundToInt(position.x), Mathf.RoundToInt(position.y));
@@ -56,71 +60,117 @@ public class Ghost : MonoBehaviour
 		if (currentPosition != targetPosition)
 		{
 			Vector2 position = transform.position;
-			animator.SetFloat("MoveX", targetPosition.x - position.x);
-			animator.SetFloat("MoveY", targetPosition.y - position.y);
-			position = Vector2.MoveTowards(position, targetPosition, Time.deltaTime * speed);
+			animator.SetFloat("MoveX", Global.direction[(int)direction].x);
+			animator.SetFloat("MoveY", Global.direction[(int)direction].y);
+			if (targetPosition - currentPosition == Global.direction[(int)direction])
+			{
+				position = Vector2.MoveTowards(position, targetPosition, Time.deltaTime * speed);
+			}
+			else
+			{
+				position = Vector2.MoveTowards(position, position + Global.direction[(int)direction], Time.deltaTime * speed);
+			}
+
 			transform.position = position;
+			if (InGameManager.Instance.OutOfTileMap(transform.position))
+			{
+				transform.position = InGameManager.Instance.OppositePosition(transform.position);
+				currentPosition = targetPosition - Global.direction[(int)direction];
+			}
+
 			if (position.Approximately(targetPosition))
 			{
 				currentPosition = targetPosition;
+			}
+
+			for(int i = 0; i < Global.direction.Length; i++)
+			{
+				if (Global.direction[i] == targetPosition - currentPosition)
+					direction = (Direction)i;
 			}
 		}
 	}
 
 	void FindNextPosition()
 	{
-		if (state == GhostState.Normal)
-			targetPosition = GameManager.Instance.GetNextTileToPlayer(currentPosition.x, currentPosition.y);
+		if (state == GhostState.Normal) {
+			targetPosition = InGameManager.Instance.GetNextTileToPlayer(pattern, currentPosition, direction, canReturn);
+		}
 		else if (state == GhostState.Vulnerable)
 		{
-			targetPosition = GetNextTileForWander();
+			targetPosition = InGameManager.Instance.GetNextTileForWander(pattern, currentPosition, direction, canReturn);
 		}
 		else
 		{
-			targetPosition = GameManager.Instance.GetNextTileToCenter(currentPosition.x, currentPosition.y);
-			if (GameManager.Instance.IsPrisonEntrance(currentPosition.x, currentPosition.y))
+			targetPosition = InGameManager.Instance.GetNextTileToCenter(currentPosition, direction, canReturn);
+			if (InGameManager.Instance.IsPrisonEntrance(currentPosition))
 			{
-				Alive();
+				SetState(GhostState.Normal);
 			}
 		}
+
+		if (targetPosition == currentPosition)
+			targetPosition = FindNextTileForStraight();
+
+		canReturn = false;
 	}
 
-	Vector2Int GetNextTileForWander()
+	Vector2Int FindNextTileForStraight()
 	{
-		while (true)
+		Direction[] orderedDirections = new Direction[(int)Direction.End];
+		orderedDirections[0] = direction;
+		if (Random.Range(0, 2) == 0)
 		{
-			Direction newDirection = (Direction)Random.Range(0, (int)Direction.End);
+			orderedDirections[1] = (Direction)((int)(direction + 1) % (int)Direction.End);
+			orderedDirections[2] = (Direction)((int)(direction + (int)Direction.End - 1) % (int)Direction.End);
+		}
+		else
+		{
+			orderedDirections[1] = (Direction)((int)(direction + (int)Direction.End - 1) % (int)Direction.End);
+			orderedDirections[2] = (Direction)((int)(direction + 1) % (int)Direction.End);
+		}
+		orderedDirections[3] = Global.Opposition(direction);
 
-			Vector2Int newTarget = Vector2Int.zero;
-			newTarget.x = currentPosition.x + (int)Global.direction[(int)newDirection].x;
-			newTarget.y = currentPosition.y + (int)Global.direction[(int)newDirection].y;
-
-			if (!GameManager.Instance.IsObstacle(newTarget.x, newTarget.y))
+		for (int i = 0; i < orderedDirections.Length; i++)
+		{
+			Vector2Int newTarget = InGameManager.Instance.CoordInRange(currentPosition + Global.direction[(int)orderedDirections[i]]);
+			if (!InGameManager.Instance.IsObstacle(newTarget))
 			{
+				direction = orderedDirections[i];
 				return newTarget;
 			}
 		}
+		return currentPosition;
 	}
 
-	void Alive()
+	public void SetState(GhostState _state)
 	{
-		state = GhostState.Normal;
-		animator.SetTrigger("Alive");
-		GetComponent<Collider>().enabled = true;
-	}
+		if (_state == GhostState.Normal)
+		{
+			animator.SetTrigger("Alive");
+			GetComponent<Collider>().enabled = true;
+		}
+		else if (state != GhostState.Death && _state == GhostState.Vulnerable)
+		{
+			if (state == GhostState.Normal)
+				animator.SetTrigger("Vulnerable");
+			aliveTime = Time.time + vulnerableDuration;
+		}
+		else if (_state == GhostState.Death)
+		{
+			animator.SetTrigger("Death");
+			GetComponent<Collider>().enabled = false;
+		}
+		else
+		{
+			return;
+		}
+		state = _state;
 
-	public void ToVulnerable()
-	{
-		state = GhostState.Vulnerable;
-		animator.SetTrigger("Vulnerable");
-		aliveTime = Time.time + vulnerableDuration;
-	}
-
-	public void Death()
-	{
-		state = GhostState.Death;
-		animator.SetTrigger("Death");
-		GetComponent<Collider>().enabled = false;
+		canReturn = true;
+		Color color = spriteRenderer.color;
+		color.a = 1.0f;
+		spriteRenderer.color = color;
 	}
 
 	public bool CanKillPacman()
@@ -130,19 +180,18 @@ public class Ghost : MonoBehaviour
 
 	void Blink()
 	{
-		Color color = spriteRenderer.color;
 		if (aliveTime - Time.time < warningTime)
 		{
+			Color color = spriteRenderer.color;
 			if (color.a >= 0.5f)
 				color.a = 0.0f;
 			else
 				color.a = 1.0f;
+			spriteRenderer.color = color;
 		}
 		if (aliveTime <= Time.time)
 		{
-			color.a = 1.0f;
-			Alive();
+			SetState(GhostState.Normal);
 		}
-		spriteRenderer.color = color;
 	}
 }

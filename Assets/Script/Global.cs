@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 
 public static class Global
 {
-	public static Vector2[] direction = { new Vector2(0, 1), new Vector2(1, 0), new Vector2(0, -1), new Vector2(-1, 0) };
+	public static Vector2Int[] direction = { new Vector2Int(0, 1), new Vector2Int(1, 0), new Vector2Int(0, -1), new Vector2Int(-1, 0) };
  
 	public static bool Approximately(this Vector2 a, Vector2 b)
     {        
@@ -13,6 +15,27 @@ public static class Global
 	public static Direction Opposition(Direction value)
 	{
 		return (Direction) (((int) value + 2) % (int) Direction.End);
+	}
+
+	public static int GetTileDistance(Vector2Int current, Vector2Int target, Vector2Int size)
+	{
+		int diffX = Mathf.Abs(target.x - current.x);
+		int diffY = Mathf.Abs(target.y - current.y);
+		return Mathf.Min(size.x - diffX, diffX) + Mathf.Min(size.y - diffY, diffY);
+	}
+
+	public static void MoveOnXAxis(this RectTransform a, float value)
+	{
+		Vector2 position = a.anchoredPosition;
+		position.x += value;
+		a.anchoredPosition = position;
+	}
+
+	public static void MoveOnYAxis(this RectTransform a, float value)
+	{
+		Vector2 position = a.anchoredPosition;
+		position.y += value;
+		a.anchoredPosition = position;
 	}
 }
 
@@ -36,4 +59,24 @@ public struct ObstacleSprite
 public enum GhostState
 {
 	Normal, Vulnerable, Death
+}
+
+public enum GhostPattern
+{
+	Blinky, Pinky, Inky, Clyde
+}
+
+[System.Serializable]
+public struct GhostTargetInVulnerable
+{
+	public GhostPattern pattern;
+	public Vector2Int target;
+}
+
+[System.Serializable]
+public struct UiMenu
+{
+	public GameObject parent;
+	public string name;
+	[HideInInspector] public List<Image> contentList;
 }

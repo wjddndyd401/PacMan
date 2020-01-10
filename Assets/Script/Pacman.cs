@@ -14,20 +14,22 @@ public class Pacman : MonoBehaviour
 
 	private void Awake()
 	{
+		animator = GetComponent<Animator>();
+	}
+
+	public void Init()
+	{
 		direction = Direction.Right;
 		newDirection = direction;
 		RotateToDirection();
 		isDeath = false;
-		animator = GetComponent<Animator>();
-	}
 
-	void Start()
-	{
 		Vector3 position = transform.position;
 		currentPosition = new Vector2Int(Mathf.RoundToInt(position.x), Mathf.RoundToInt(position.y));
 		position.x = currentPosition.x;
 		position.y = currentPosition.y;
 		transform.position = position;
+		targetPosition = currentPosition;
 	}
 
     void Update()
@@ -43,31 +45,44 @@ public class Pacman : MonoBehaviour
 			AnimatorStateInfo info = animator.GetCurrentAnimatorStateInfo(0);
 			if (info.IsName("Death") && info.normalizedTime >= 1.0f)
 			{
-				Destroy(gameObject);
+				gameObject.SetActive(false);
 			}
 		}
 	}
 
 	public void Move()
 	{
-		Vector2Int newTarget = GetTargetPosition(currentPosition, newDirection);
-
+		Vector2Int newTarget = InGameManager.Instance.CoordInRange(currentPosition + Global.direction[(int)newDirection]);
 		Vector2 position = transform.position;
-		if (Global.Opposition(direction) == newDirection ||
-			(position.Approximately(currentPosition) && !GameManager.Instance.IsObstacle(newTarget.x, newTarget.y) && !GameManager.Instance.IsPrisonEntrance(newTarget.x, newTarget.y)))
+
+		if (Global.Opposition(direction) == newDirection
+			|| (position.Approximately(currentPosition) && !InGameManager.Instance.IsObstacle(newTarget) && !InGameManager.Instance.IsPrisonEntrance(newTarget)))
 		{
 			direction = newDirection;
-			targetPosition = newTarget;
+			targetPosition = currentPosition;
 		}
 		else
 		{
-			targetPosition = GetTargetPosition(currentPosition, direction);
+			targetPosition = InGameManager.Instance.CoordInRange(currentPosition + Global.direction[(int)direction]);
 		}
 
-		if (!GameManager.Instance.IsObstacle(targetPosition.x, targetPosition.y))
+		if (!InGameManager.Instance.IsObstacle(targetPosition))
 		{
-			position = Vector2.MoveTowards(position, targetPosition, Time.deltaTime * speed);
+			if (targetPosition - currentPosition == Global.direction[(int)direction])
+			{
+				position = Vector2.MoveTowards(position, targetPosition, Time.deltaTime * speed);
+			}
+			else
+			{
+				position = Vector2.MoveTowards(position, position + Global.direction[(int)direction], Time.deltaTime * speed);
+			}
+
 			transform.position = position;
+			if (InGameManager.Instance.OutOfTileMap(transform.position))
+			{
+				transform.position = InGameManager.Instance.OppositePosition(transform.position);
+				currentPosition = targetPosition - Global.direction[(int)direction];
+			}
 
 			if (position.Approximately(targetPosition))
 			{
@@ -120,14 +135,6 @@ public class Pacman : MonoBehaviour
 		transform.rotation = Quaternion.Euler(rotation);
 	}
 
-	public Vector2Int GetTargetPosition(Vector2Int current, Direction direction)
-	{
-		Vector2Int result = Vector2Int.zero;
-		result.x = current.x + (int)Global.direction[(int)direction].x;
-		result.y = current.y + (int)Global.direction[(int)direction].y;
-		return result;
-	}
-
 	private void OnTriggerEnter(Collider other)
 	{
 		if(other.CompareTag("Cookie"))
@@ -143,8 +150,13 @@ public class Pacman : MonoBehaviour
 				animator.SetTrigger("Death");
 			} else
 			{
-				ghost.Death();
+				ghost.SetState(GhostState.Death);
 			}
 		}
+	}
+
+	public Direction GetDirection()
+	{
+		return direction;
 	}
 }

@@ -15,6 +15,6 @@ public class Cookie : MonoBehaviour
 
 	public void Collide()
 	{
-		GameManager.Instance.EatCookie(score, isPCookie);
+		InGameManager.Instance.EatCookie(score, isPCookie);
 	}
 }
