@@ -163,6 +163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: de2af7647f057d44d99d64f3b4ce7fa6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  canvas: {fileID: 1674960043}
   tileMapBackground: {fileID: 1017258791}
   tilePrefab: {fileID: -9151126336499525256, guid: 5bcfcbb49c7af7b419cd1f5bf7b40df9,
     type: 3}
@@ -174,77 +175,7 @@ MonoBehaviour:
   - {fileID: 1136671005}
   cookiePrefab: {fileID: -9151126336499525256, guid: acaa78c69e7bae3498659655e36ec3bb,
     type: 3}
-  obstacleSprites:
-  - adjacentObstacleDirection: 1
-    sprite: {fileID: 5311507831917359242, guid: 213b11d29603ab548bb712af5f7fd32a,
-      type: 3}
-  - adjacentObstacleDirection: 2
-    sprite: {fileID: 7021888389259104248, guid: 213b11d29603ab548bb712af5f7fd32a,
-      type: 3}
-  - adjacentObstacleDirection: 3
-    sprite: {fileID: -6908525852477107164, guid: 213b11d29603ab548bb712af5f7fd32a,
-      type: 3}
-  - adjacentObstacleDirection: 4
-    sprite: {fileID: 9002000823253285430, guid: 213b11d29603ab548bb712af5f7fd32a,
-      type: 3}
-  - adjacentObstacleDirection: 5
-    sprite: {fileID: -4563310351641418110, guid: 213b11d29603ab548bb712af5f7fd32a,
-      type: 3}
-  - adjacentObstacleDirection: 6
-    sprite: {fileID: 6878014015018855295, guid: 213b11d29603ab548bb712af5f7fd32a,
-      type: 3}
-  - adjacentObstacleDirection: 7
-    sprite: {fileID: -2905649622121801975, guid: 213b11d29603ab548bb712af5f7fd32a,
-      type: 3}
-  - adjacentObstacleDirection: 8
-    sprite: {fileID: 1103857319950265496, guid: 213b11d29603ab548bb712af5f7fd32a,
-      type: 3}
-  - adjacentObstacleDirection: 9
-    sprite: {fileID: -4302827572162956322, guid: 213b11d29603ab548bb712af5f7fd32a,
-      type: 3}
-  - adjacentObstacleDirection: 10
-    sprite: {fileID: 1496074120462480241, guid: 213b11d29603ab548bb712af5f7fd32a,
-      type: 3}
-  - adjacentObstacleDirection: 11
-    sprite: {fileID: -3181810730676346225, guid: 213b11d29603ab548bb712af5f7fd32a,
-      type: 3}
-  - adjacentObstacleDirection: 12
-    sprite: {fileID: 4974215514491571659, guid: 213b11d29603ab548bb712af5f7fd32a,
-      type: 3}
-  - adjacentObstacleDirection: 0
-    sprite: {fileID: 6986764635195019515, guid: 213b11d29603ab548bb712af5f7fd32a,
-      type: 3}
-  prisonSprites:
-  - adjacentObstacleDirection: 0
-    sprite: {fileID: 6986764635195019515, guid: 213b11d29603ab548bb712af5f7fd32a,
-      type: 3}
-  - adjacentObstacleDirection: 1
-    sprite: {fileID: 2906843250923733240, guid: 213b11d29603ab548bb712af5f7fd32a,
-      type: 3}
-  - adjacentObstacleDirection: 2
-    sprite: {fileID: 8849481148010358003, guid: 213b11d29603ab548bb712af5f7fd32a,
-      type: 3}
-  - adjacentObstacleDirection: 3
-    sprite: {fileID: -3360612181566933909, guid: 213b11d29603ab548bb712af5f7fd32a,
-      type: 3}
-  - adjacentObstacleDirection: 4
-    sprite: {fileID: 5385994790622883084, guid: 213b11d29603ab548bb712af5f7fd32a,
-      type: 3}
-  - adjacentObstacleDirection: 5
-    sprite: {fileID: 631871326088480954, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  - adjacentObstacleDirection: 6
-    sprite: {fileID: 2514042078933744532, guid: 213b11d29603ab548bb712af5f7fd32a,
-      type: 3}
-  - adjacentObstacleDirection: 7
-    sprite: {fileID: 4931554643274434934, guid: 213b11d29603ab548bb712af5f7fd32a,
-      type: 3}
-  - adjacentObstacleDirection: 8
-    sprite: {fileID: -5076667226280777977, guid: 213b11d29603ab548bb712af5f7fd32a,
-      type: 3}
-  prisonEntranceSprite: {fileID: -6372959061049211570, guid: 213b11d29603ab548bb712af5f7fd32a,
-    type: 3}
-  cookie: {fileID: 4063061920511473052, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  pCookie: {fileID: 9064037868673475702, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
+  tileSpriteTable: {fileID: 11400000, guid: e04bec842a8c9614b8f2af26c5eae72c, type: 2}
   alphabetSprites:
   - {fileID: 4596506743932242536, guid: 57e95bd145037754b85bd087f311002b, type: 3}
   - {fileID: 4670118941566451196, guid: 57e95bd145037754b85bd087f311002b, type: 3}
@@ -303,6 +234,9 @@ MonoBehaviour:
   pCookieScore: 50
   loadingScreen: {fileID: 1051790516}
   loadingText: {fileID: 1546808128}
+  ghostScores: c8000000900100002003000040060000
+  scoreValuePrefab: {fileID: 3788958738130258024, guid: 3f3776c8a7151f443a196559aefe99a8,
+    type: 3}
 --- !u!1 &385257655
 GameObject:
   m_ObjectHideFlags: 0
@@ -1438,7 +1372,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2cc522d3d133a224182675d9e027891a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 4
+  speed: 10
 --- !u!95 &1556376174
 Animator:
   serializedVersion: 3

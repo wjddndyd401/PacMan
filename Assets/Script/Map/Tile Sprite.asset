@@ -1,0 +1,87 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 424485093b4c42341a4c84683bb9d99e, type: 3}
+  m_Name: Tile Sprite
+  m_EditorClassIdentifier: 
+  none: {fileID: 6986764635195019515, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
+  obstacleSprites:
+  - adjacentObstacleDirection: 0
+    sprite: {fileID: 6986764635195019515, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  - adjacentObstacleDirection: 1
+    sprite: {fileID: 5311507831917359242, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  - adjacentObstacleDirection: 2
+    sprite: {fileID: 7021888389259104248, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  - adjacentObstacleDirection: 3
+    sprite: {fileID: -6908525852477107164, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  - adjacentObstacleDirection: 4
+    sprite: {fileID: 9002000823253285430, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  - adjacentObstacleDirection: 5
+    sprite: {fileID: -4563310351641418110, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  - adjacentObstacleDirection: 6
+    sprite: {fileID: 6878014015018855295, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  - adjacentObstacleDirection: 7
+    sprite: {fileID: -2905649622121801975, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  - adjacentObstacleDirection: 8
+    sprite: {fileID: 1103857319950265496, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  - adjacentObstacleDirection: 9
+    sprite: {fileID: -4302827572162956322, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  - adjacentObstacleDirection: 10
+    sprite: {fileID: 1496074120462480241, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  - adjacentObstacleDirection: 11
+    sprite: {fileID: -3181810730676346225, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  - adjacentObstacleDirection: 12
+    sprite: {fileID: 4974215514491571659, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  prisonSprites:
+  - adjacentObstacleDirection: 0
+    sprite: {fileID: 6986764635195019515, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  - adjacentObstacleDirection: 1
+    sprite: {fileID: 2906843250923733240, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  - adjacentObstacleDirection: 2
+    sprite: {fileID: 8849481148010358003, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  - adjacentObstacleDirection: 3
+    sprite: {fileID: -3360612181566933909, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  - adjacentObstacleDirection: 4
+    sprite: {fileID: 5385994790622883084, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  - adjacentObstacleDirection: 5
+    sprite: {fileID: 631871326088480954, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
+  - adjacentObstacleDirection: 6
+    sprite: {fileID: 2514042078933744532, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  - adjacentObstacleDirection: 7
+    sprite: {fileID: 4931554643274434934, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  - adjacentObstacleDirection: 8
+    sprite: {fileID: -5076667226280777977, guid: 213b11d29603ab548bb712af5f7fd32a,
+      type: 3}
+  prisonEntranceSprite: {fileID: -6372959061049211570, guid: 213b11d29603ab548bb712af5f7fd32a,
+    type: 3}
+  cookie: {fileID: 4063061920511473052, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
+  pCookie: {fileID: 9064037868673475702, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
+  player: {fileID: -1385835648374255064, guid: 00a95def03225bc40aaef66c82cfef45, type: 3}
