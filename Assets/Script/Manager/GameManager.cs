@@ -6,11 +6,10 @@ public class GameManager : MonoBehaviour
 {
 	[SerializeField] int maxLife = 3;
 	[SerializeField] int currentStage = 1;
-	[SerializeField] float loadingTime = 3.0f;
+	public ControlMode controlMode = ControlMode.TwoHand;
 
 	public int MaxLife { get { return maxLife; } private set { maxLife = value; } }
 	public int CurrentStage { get { return currentStage; } private set { currentStage = value; } }
-	public float LoadingTime { get { return loadingTime; } private set { loadingTime = value; } }
 
 	public static GameManager Instance { get; private set; } = null;
 
@@ -22,6 +21,8 @@ public class GameManager : MonoBehaviour
 			Destroy(gameObject);
 
 		DontDestroyOnLoad(this);
+
+		controlMode = (ControlMode) PlayerPrefs.GetInt("ControlMode", (int)ControlMode.TwoHand);
 	}
 
 	public void GoToNextStage()
@@ -32,5 +33,11 @@ public class GameManager : MonoBehaviour
 	public void Restart()
 	{
 		currentStage = 1;
+	}
+
+	public void SetControlMode(ControlMode newMode)
+	{
+		controlMode = newMode;
+		PlayerPrefs.SetInt("ControlMode", (int)controlMode);
 	}
 }

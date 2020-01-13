@@ -94,8 +94,13 @@ public enum FileSystemMode
 }
 
 [System.Serializable]
-public struct PrisonMoveButton
+public struct MoveButton
 {
 	public Direction direction;
 	public Button button;
+}
+
+public enum ControlMode
+{
+	LeftHand, RightHand, TwoHand
 }

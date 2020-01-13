@@ -20,8 +20,6 @@ public class InGameManager : MonoBehaviour
 	Dictionary<AdjacentObstacle, Sprite> obstacleSpriteDictionary = null;
 	Dictionary<AdjacentObstacle, Sprite> prisonSpriteDictionary = null;
 	PathFinder pathFinder;
-	[SerializeField] Sprite[] alphabetSprites = null;
-	[SerializeField] Sprite[] numberSprites = null;
 	[SerializeField] UiMenu scoreField = new UiMenu();
 	[SerializeField] UiMenu highScoreField = new UiMenu();
 	[SerializeField] UiMenu lifeField = new UiMenu();
@@ -36,11 +34,20 @@ public class InGameManager : MonoBehaviour
 	Vector2Int blinkyPosition;      // for inky
 	[SerializeField] GameObject loadingScreen = null;
 	[SerializeField] Text loadingText = null;
+	[SerializeField] Text countText = null;
+	[SerializeField] float loadingTime = 2.0f;
+	[SerializeField] Text winText = null;
+	[SerializeField] Text loseText = null;
+	[SerializeField] Text stageClearText = null;
 	string[] maps;
 	int cookieCount;
 	[SerializeField] int[] ghostScores = null;
 	int eatenGhostCount;
 	[SerializeField] FloatingText scoreValuePrefab = null;
+	[SerializeField] MoveButton[] moveButtons = null;
+	[SerializeField] Camera gameCamera = null;
+	[SerializeField] RawImage gameScreen = null;
+	RenderTexture screenTexture;
 
 	private void Awake()
 	{
@@ -77,10 +84,12 @@ public class InGameManager : MonoBehaviour
 		pacman.gameObject.SetActive(false);
 	}
 
-	private void Start()
+	void Start()
 	{
 		GameManager.Instance.Restart();
 		currentLife = GameManager.Instance.MaxLife;
+
+		SetUiMenuName(lifeField);
 
 		score = 0;
 		SetUiMenuName(scoreField);
@@ -90,43 +99,167 @@ public class InGameManager : MonoBehaviour
 		SetUiMenuName(highScoreField);
 		SetScoreField(highScoreField, highScore);
 
-		SetUiMenuName(lifeField);
+		GetUiTransformWithControlMode(out Dictionary<Direction, Vector2> position, out Dictionary<Direction, Vector2> anchor, out RectTransform screen);
+
+		gameScreen.rectTransform.offsetMin = screen.offsetMin;
+		gameScreen.rectTransform.offsetMax = screen.offsetMax;
+
+		for (int i = 0; i < moveButtons.Length; i++)
+		{
+			MoveButton buttonPair = moveButtons[i];
+			RectTransform rt = buttonPair.button.GetComponent<RectTransform>();
+
+			rt.anchorMin = anchor[buttonPair.direction];
+			rt.anchorMax = anchor[buttonPair.direction];
+			rt.anchoredPosition = position[buttonPair.direction];
+
+			buttonPair.button.onClick.AddListener(() =>
+			{
+				if (pacman.isActiveAndEnabled)
+				{
+					pacman.SetDirection(buttonPair.direction);
+				}
+			});
+		}
 
 		StartNewGame();
 	}
 
-	private void Update()
+	void Update()
 	{
 		if (pacman.gameObject.activeSelf == false)
 		{
 			currentLife--;
-			if (currentLife < 0)
+			if (currentLife > 0)
 			{
-				// Fail
-				SceneManager.LoadScene("Title");
+				StartCoroutine(StartCurrentGame());
 			}
 			else
 			{
-				Restart();
+				PrintWaitScreen(loseText, () => SceneManager.LoadScene("Title"));
+			}
+		}
+		else if (cookieCount <= 0)
+		{
+			pacman.SetToWaitMode();
+			if(GameManager.Instance.CurrentStage < maps.Length)
+			{
+				PrintWaitScreen(stageClearText, () =>
+				{
+					GameManager.Instance.GoToNextStage();
+					StartNewGame();
+				});
+			}
+			else
+			{
+				PrintWaitScreen(winText, () => SceneManager.LoadScene("Title"));
 			}
 		}
 
-		if(cookieCount <= 0)
+		Vector3 cameraPosition = pacman.transform.position - new Vector3(0, 0, 10);
+		Vector2Int mapSize = tileMap.MapSize();
+		Vector2 screenSize = new Vector2(gameScreen.rectTransform.rect.width, gameScreen.rectTransform.rect.height);
+
+		if (screenTexture != null)
 		{
-			GameManager.Instance.GoToNextStage();
-			if(GameManager.Instance.CurrentStage <= maps.Length)
-			{
-				StartNewGame();
-			} else
-			{
-				// Win
-				SceneManager.LoadScene("Title");
-			}
+			screenTexture.Release();
+		}
+		screenTexture = new RenderTexture((int)gameScreen.rectTransform.rect.width, (int)gameScreen.rectTransform.rect.height, 24);
+		gameCamera.targetTexture = screenTexture;
+		gameScreen.texture = screenTexture;
+
+		if (gameCamera.orthographicSize * screenSize.x / screenSize.y * 2 > mapSize.x)
+		{
+			cameraPosition.x = mapSize.x * 0.5f;
+		}
+		else if (cameraPosition.x < gameCamera.orthographicSize * screenSize.x / screenSize.y)
+		{
+			cameraPosition.x = gameCamera.orthographicSize * screenSize.x / screenSize.y;
+		}
+		else if (cameraPosition.x > mapSize.x - gameCamera.orthographicSize * screenSize.x / screenSize.y)
+		{
+			cameraPosition.x = mapSize.x - gameCamera.orthographicSize * screenSize.x / screenSize.y;
+		}
+
+		if(gameCamera.orthographicSize * 2 > mapSize.y)
+		{
+			cameraPosition.y = mapSize.y * 0.5f;
+		}
+		else if (cameraPosition.y < gameCamera.orthographicSize)
+		{
+			cameraPosition.y = gameCamera.orthographicSize;
+		}
+		else if (cameraPosition.y > mapSize.y - gameCamera.orthographicSize)
+		{
+			cameraPosition.y = mapSize.y - gameCamera.orthographicSize;
+		}
+
+		cameraPosition.x -= 0.5f;
+		cameraPosition.y -= 0.5f;
+		gameCamera.transform.position = cameraPosition;
+	}
+
+	void GetUiTransformWithControlMode(out Dictionary<Direction, Vector2> position, out Dictionary<Direction, Vector2> anchor, out RectTransform screen)
+	{
+		position = new Dictionary<Direction, Vector2>();
+		anchor = new Dictionary<Direction, Vector2>();
+		screen = gameScreen.rectTransform;
+		if (GameManager.Instance.controlMode == ControlMode.TwoHand)
+		{
+			position.Add(Direction.Up, new Vector2(50, 35));
+			position.Add(Direction.Right, new Vector2(-40, 0));
+			position.Add(Direction.Down, new Vector2(50, -35));
+			position.Add(Direction.Left, new Vector2(-110, 0));
+			anchor.Add(Direction.Up, new Vector2(0f, 0.5f));
+			anchor.Add(Direction.Right, new Vector2(1f, 0.5f));
+			anchor.Add(Direction.Down, new Vector2(0f, 0.5f));
+			anchor.Add(Direction.Left, new Vector2(1f, 0.5f));
+			screen.offsetMin = new Vector2(100, 0);
+			screen.offsetMax = new Vector2(-150, 0);
+		}
+		else if (GameManager.Instance.controlMode == ControlMode.RightHand)
+		{
+			position.Add(Direction.Up, new Vector2(-110, 70));
+			position.Add(Direction.Right, new Vector2(-40, 0));
+			position.Add(Direction.Down, new Vector2(-110, -70));
+			position.Add(Direction.Left, new Vector2(-180, 0));
+			anchor.Add(Direction.Up, new Vector2(1f, 0.5f));
+			anchor.Add(Direction.Right, new Vector2(1f, 0.5f));
+			anchor.Add(Direction.Down, new Vector2(1f, 0.5f));
+			anchor.Add(Direction.Left, new Vector2(1f, 0.5f));
+			screen.offsetMin = new Vector2(0, 0);
+			screen.offsetMax = new Vector2(-250, 0);
+		}
+		else if (GameManager.Instance.controlMode == ControlMode.LeftHand)
+		{
+			position.Add(Direction.Up, new Vector2(110, 70));
+			position.Add(Direction.Right, new Vector2(180, 0));
+			position.Add(Direction.Down, new Vector2(110, -70));
+			position.Add(Direction.Left, new Vector2(40, 0));
+			anchor.Add(Direction.Up, new Vector2(0f, 0.5f));
+			anchor.Add(Direction.Right, new Vector2(0f, 0.5f));
+			anchor.Add(Direction.Down, new Vector2(0f, 0.5f));
+			anchor.Add(Direction.Left, new Vector2(0f, 0.5f));
+			screen.offsetMin = new Vector2(250, 0);
+			screen.offsetMax = new Vector2(0, 0);
+		}
+	}
+
+	void PrintWaitScreen(MonoBehaviour screen, System.Action clickAction)
+	{
+		screen.gameObject.SetActive(true);
+		if (Input.GetMouseButton(0) || Input.touchCount > 0)
+		{
+			clickAction();
 		}
 	}
 
 	void StartNewGame()
 	{
+		winText.gameObject.SetActive(false);
+		loseText.gameObject.SetActive(false);
+		stageClearText.gameObject.SetActive(false);
+
 		Transform[] childList = tileMapBackground.GetComponentsInChildren<Transform>(true);
 		if (childList != null)
 		{
@@ -139,9 +272,7 @@ public class InGameManager : MonoBehaviour
 
 		tileMap = new TileMap(maps[GameManager.Instance.CurrentStage - 1]);
 		pathFinder = new PathFinder(tileMap);
-		if (tileMapBackground != null)
-			PrintMap();
-		Camera.main.transform.position = new Vector3(tileMap.CenterPosition().x, tileMap.CenterPosition().y, Camera.main.transform.position.z);
+		PrintMap();
 
 		ghostTargetInVulnerable = new Dictionary<GhostPattern, Vector2Int>();
 		ghostTargetInVulnerable.Add(GhostPattern.Blinky, tileMap.MapSize());
@@ -149,10 +280,10 @@ public class InGameManager : MonoBehaviour
 		ghostTargetInVulnerable.Add(GhostPattern.Inky, new Vector2Int(0, tileMap.MapSize().y));
 		ghostTargetInVulnerable.Add(GhostPattern.Clyde, new Vector2Int(0, 0));
 
-		Restart();
+		StartCoroutine(StartCurrentGame());
 	}
 
-	void Restart()
+	IEnumerator StartCurrentGame()
 	{
 		pacman.gameObject.SetActive(true);
 		Vector3 playerPosition = Vector3.zero;
@@ -163,7 +294,6 @@ public class InGameManager : MonoBehaviour
 
 		for (int i = 0; i < ghosts.Length; i++)
 		{
-			ghosts[i].transform.position = new Vector3(tileMap.CenterPosition().x, tileMap.CenterPosition().y, 0);
 			Vector3 ghostPosision = Vector3.zero;
 			ghostPosision.x = tileMap.GhostPosition((GhostPattern)i).x;
 			ghostPosision.y = tileMap.GhostPosition((GhostPattern)i).y;
@@ -174,23 +304,32 @@ public class InGameManager : MonoBehaviour
 
 		SetLifeField();
 
-		StartCoroutine(ReadyToStart());
-	}
-
-	IEnumerator ReadyToStart()
-	{
 		loadingScreen.gameObject.SetActive(true);
 		loadingText.text = "Stage " + GameManager.Instance.CurrentStage + "\n\n   x " + currentLife;
-		Time.timeScale = 0;
-		float loadingFinishTime = Time.time + GameManager.Instance.LoadingTime;
+		Time.timeScale = 0;		
+		yield return StartCoroutine(WaitingInZeroTimeScale(loadingTime));
+		loadingScreen.gameObject.SetActive(false);
+
+		countText.text = "Ready";
+		countText.gameObject.SetActive(true);
+		yield return StartCoroutine(WaitingInZeroTimeScale(1.0f));
+
+		countText.text = "Go!";
+		yield return StartCoroutine(WaitingInZeroTimeScale(1.0f));
+		countText.gameObject.SetActive(false);
+
+		Time.timeScale = 1;
+	}
+
+	IEnumerator WaitingInZeroTimeScale(float second)
+	{
+		float countFinishTime = Time.time + second;
 		float currentTime = Time.time;
-		while (currentTime < loadingFinishTime)
+		while (currentTime < countFinishTime)
 		{
 			yield return null;
 			currentTime += Time.unscaledDeltaTime;
 		}
-		loadingScreen.gameObject.SetActive(false);
-		Time.timeScale = 1;
 	}
 
 	void PrintMap()
@@ -344,8 +483,12 @@ public class InGameManager : MonoBehaviour
 	public void EatGhost(Vector3 position)
 	{
 		AddScore(ghostScores[eatenGhostCount]);
-		FloatingText scoreValue = Instantiate(scoreValuePrefab, position, Quaternion.identity);
+		Vector2 floatingPosition = gameCamera.WorldToScreenPoint(position);
+		floatingPosition.x += gameScreen.rectTransform.offsetMin.x;
+		floatingPosition.y += gameScreen.rectTransform.offsetMin.y;
+		FloatingText scoreValue = Instantiate(scoreValuePrefab);
 		scoreValue.transform.SetParent(canvas.transform);
+		scoreValue.GetComponent<RectTransform>().anchoredPosition = floatingPosition;
 		scoreValue.Print(ghostScores[eatenGhostCount].ToString());
 
 		if (eatenGhostCount + 1 < ghostScores.Length)
@@ -373,7 +516,7 @@ public class InGameManager : MonoBehaviour
 			newSprite.rectTransform.MoveOnXAxis(-i * (newSprite.rectTransform.sizeDelta.x + 1));
 			newSprite.rectTransform.MoveOnYAxis((newSprite.rectTransform.sizeDelta.y + 1));
 			newSprite.transform.localScale = new Vector3(1, 1, 1);
-			newSprite.sprite = alphabetSprites[Char.ToUpper(field.name[field.name.Length - i - 1]) - 'A'];
+			newSprite.sprite = tileSpriteTable.AlphabetSprites[char.ToUpper(field.name[field.name.Length - i - 1]) - 'A'];
 		}
 	}
 
@@ -386,7 +529,7 @@ public class InGameManager : MonoBehaviour
 		if (field.contentList.Count == 0)
 		{
 			Image newSprite = NewMenuObject(field);
-			newSprite.sprite = numberSprites[0];
+			newSprite.sprite = tileSpriteTable.NumberSprites[0];
 			field.contentList.Add(newSprite);
 		}
 
@@ -399,7 +542,7 @@ public class InGameManager : MonoBehaviour
 				newSprite.rectTransform.MoveOnXAxis(-digit * (newSprite.rectTransform.sizeDelta.x + 1));
 			}
 			field.contentList[digit].gameObject.SetActive(true);
-			field.contentList[digit].sprite = numberSprites[(scoreForPrint / unit) % 10];
+			field.contentList[digit].sprite = tileSpriteTable.NumberSprites[(scoreForPrint / unit) % 10];
 			digit++;
 			unit *= 10;
 		}

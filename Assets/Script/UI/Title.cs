@@ -1,15 +1,60 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class Title : MonoBehaviour
 {
-	void Update()
+	[SerializeField] GameObject mainMenu = null;
+	[SerializeField] GameObject option = null;
+	[SerializeField] ToggleGroup optionGroup = null;
+	[SerializeField] OptionToggle[] toggles = null;
+
+	private void Start()
 	{
-		if (Input.GetMouseButton(0) || Input.touchCount > 0)
+		OpenMainMenu();
+	}
+
+	public void OpenMainMenu()
+	{
+		mainMenu.SetActive(true);
+		option.SetActive(false);
+	}
+
+	public void OpenOption()
+	{
+		mainMenu.SetActive(false);
+		option.SetActive(true);
+
+		for (int i = 0; i < toggles.Length; i++)
 		{
-			SceneManager.LoadScene("GameScene");
+			if (toggles[i].ControlMode == GameManager.Instance.controlMode)
+			{
+				toggles[i].GetComponent<Toggle>().isOn = true;
+			}
+		}
+	}
+
+	public void StartGame()
+	{
+		SceneManager.LoadScene("GameScene");
+	}
+
+	public void SetControlMode()
+	{
+		Toggle activeToggle = null;
+		foreach (var toggle in optionGroup.ActiveToggles())
+		{
+			if (toggle.isOn)
+			{
+				activeToggle = toggle;
+			}
+		}
+
+		if(activeToggle != null)
+		{
+			GameManager.Instance.SetControlMode(activeToggle.GetComponent<OptionToggle>().ControlMode);
 		}
 	}
 }

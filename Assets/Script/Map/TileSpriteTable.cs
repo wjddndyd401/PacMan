@@ -19,4 +19,8 @@ public class TileSpriteTable : ScriptableObject
 	public Sprite PCookieSprite { get { return pCookie; } }
 	[SerializeField] Sprite player = null;
 	public Sprite PlayerSprite { get { return player; } }
+	[SerializeField] Sprite[] alphabetSprites = null;
+	public Sprite[] AlphabetSprites { get { return alphabetSprites; } }
+	[SerializeField] Sprite[] numberSprites = null;
+	public Sprite[] NumberSprites { get { return numberSprites; } }
 }

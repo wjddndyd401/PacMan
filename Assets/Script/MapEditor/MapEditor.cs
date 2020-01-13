@@ -17,7 +17,7 @@ public class MapEditor : MonoBehaviour
     [SerializeField] Button saveButton = null;
     [SerializeField] Button loadButton = null;
     [SerializeField] FileSystem fileSystem = null;
-    [SerializeField] PrisonMoveButton[] prisonMoveButtons = null;
+    [SerializeField] MoveButton[] prisonMoveButtons = null;
 
     SpriteRenderer[,] spriteList;
 
@@ -55,8 +55,8 @@ public class MapEditor : MonoBehaviour
 
         for(int i = 0; i < prisonMoveButtons.Length; i++)
         {
-            PrisonMoveButton buttonPair = prisonMoveButtons[i];
-            prisonMoveButtons[i].button.onClick.AddListener(() => MovePrison(buttonPair.direction));
+            MoveButton buttonPair = prisonMoveButtons[i];
+            buttonPair.button.onClick.AddListener(() => MovePrison(buttonPair.direction));
         }
     }
 

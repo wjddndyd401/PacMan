@@ -11,10 +11,12 @@ public class Pacman : MonoBehaviour
 	[SerializeField] float speed = 1.0f;
 	Animator animator;
 	bool isDeath;
+	Collider mCollider;
 
 	private void Awake()
 	{
 		animator = GetComponent<Animator>();
+		mCollider = GetComponent<Collider>();
 	}
 
 	public void Init()
@@ -30,6 +32,8 @@ public class Pacman : MonoBehaviour
 		position.y = currentPosition.y;
 		transform.position = position;
 		targetPosition = currentPosition;
+
+		mCollider.enabled = true;
 	}
 
     void Update()
@@ -112,6 +116,11 @@ public class Pacman : MonoBehaviour
 		}
 	}
 
+	public void SetDirection(Direction direction)
+	{
+		newDirection = direction;
+	}
+
 	public void RotateToDirection()
 	{
 		Vector3 rotation = transform.rotation.eulerAngles;
@@ -152,7 +161,7 @@ public class Pacman : MonoBehaviour
 			} else
 			{
 				ghost.SetState(GhostState.Death);
-				InGameManager.Instance.EatGhost(Camera.main.WorldToScreenPoint(transform.position));
+				InGameManager.Instance.EatGhost(transform.position);
 			}
 		}
 	}
@@ -160,5 +169,15 @@ public class Pacman : MonoBehaviour
 	public Direction GetDirection()
 	{
 		return direction;
+	}
+
+	public void SetToWaitMode()
+	{
+		mCollider.enabled = false;
+	}
+
+	public void SetToGameMode()
+	{
+		mCollider.enabled = true;
 	}
 }

@@ -123,19 +123,19 @@ public class TileMap
 
 		if (name == GhostPattern.Blinky)
 		{
-			return (prisonMin + prisonMax) + new Vector2Int(1, 0);
+			return prisonCenter + new Vector2Int(1, 0);
 		}
 		else if (name == GhostPattern.Pinky)
 		{
-			return (prisonMin + prisonMax);
+			return prisonCenter;
 		}
 		else if (name == GhostPattern.Inky)
 		{
-			return (prisonMin + prisonMax) + new Vector2Int(2, 0);
+			return prisonCenter + new Vector2Int(2, 0);
 		}
 		else if (name == GhostPattern.Clyde)
 		{
-			return (prisonMin + prisonMax) - new Vector2Int(1, 0);
+			return prisonCenter - new Vector2Int(1, 0);
 		}
 		return CenterPosition();
 	}
