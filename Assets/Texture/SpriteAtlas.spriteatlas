@@ -34,7 +34,8 @@ SpriteAtlas:
     - {fileID: 2800000, guid: 00a95def03225bc40aaef66c82cfef45, type: 3}
     - {fileID: 2800000, guid: 57e95bd145037754b85bd087f311002b, type: 3}
     - {fileID: 2800000, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-    totalSpriteSurfaceArea: 2202026
+    - {fileID: 2800000, guid: acd3a5ce5be326f438ffa7629d8c79ec, type: 3}
+    totalSpriteSurfaceArea: 2206922
     bindAsDefault: 1
     storedHash:
       serializedVersion: 2
@@ -222,6 +223,7 @@ SpriteAtlas:
   - {fileID: 6738408359909127868, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
   - {fileID: -5187687635592830823, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
   - {fileID: 21300000, guid: cf44897d17ce4574dac8b2ff09b1bad0, type: 3}
+  - {fileID: 21300000, guid: acd3a5ce5be326f438ffa7629d8c79ec, type: 3}
   - {fileID: 6130495273388583416, guid: 00a95def03225bc40aaef66c82cfef45, type: 3}
   - {fileID: -889089460928952931, guid: 00a95def03225bc40aaef66c82cfef45, type: 3}
   - {fileID: 939923090220086711, guid: 00a95def03225bc40aaef66c82cfef45, type: 3}
@@ -893,6 +895,7 @@ SpriteAtlas:
   - MapSprite_64
   - MapSprite_67
   - Title
+  - Icon
   - General Sprite_74
   - General Sprite_75
   - General Sprite_69

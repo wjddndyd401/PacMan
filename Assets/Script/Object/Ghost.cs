@@ -64,6 +64,13 @@ public class Ghost : MonoBehaviour
 			Vector2 position = transform.position;
 			animator.SetFloat("MoveX", Global.directions[(int)direction].x);
 			animator.SetFloat("MoveY", Global.directions[(int)direction].y);
+			
+			for (int i = 0; i < Global.directions.Length; i++)
+			{
+				if (InGameManager.Instance.CoordInRange(currentPosition + Global.directions[i]) == targetPosition)
+					direction = (Direction)i;
+			}
+
 			if (targetPosition - currentPosition == Global.directions[(int)direction])
 			{
 				position = Vector2.MoveTowards(position, targetPosition, Time.deltaTime * speed);
@@ -84,12 +91,6 @@ public class Ghost : MonoBehaviour
 			{
 				currentPosition = targetPosition;
 			}
-
-			for(int i = 0; i < Global.directions.Length; i++)
-			{
-				if (Global.directions[i] == targetPosition - currentPosition)
-					direction = (Direction)i;
-			}
 		}
 	}
 
@@ -104,7 +105,7 @@ public class Ghost : MonoBehaviour
 		}
 		else
 		{
-			targetPosition = InGameManager.Instance.GetNextTileToCenter(currentPosition, direction, canReturn);
+			targetPosition = InGameManager.Instance.GetNextTileToPrison(currentPosition, direction, canReturn);
 			if (InGameManager.Instance.IsPrisonEntrance(currentPosition))
 			{
 				SetState(GhostState.Normal);

@@ -6,8 +6,8 @@ public class Pacman : MonoBehaviour
 {
 	Direction direction;
 	Direction newDirection;
-	Vector2Int targetPosition;
-	Vector2Int currentPosition;
+	Vector2Int targetCoord;
+	Vector2Int currentCoord;
 	[SerializeField] float speed = 1.0f;
 	Animator animator;
 	bool isDeath;
@@ -27,11 +27,11 @@ public class Pacman : MonoBehaviour
 		isDeath = false;
 
 		Vector3 position = transform.position;
-		currentPosition = new Vector2Int(Mathf.RoundToInt(position.x), Mathf.RoundToInt(position.y));
-		position.x = currentPosition.x;
-		position.y = currentPosition.y;
+		currentCoord = new Vector2Int(Mathf.RoundToInt(position.x), Mathf.RoundToInt(position.y));
+		position.x = currentCoord.x;
+		position.y = currentCoord.y;
 		transform.position = position;
-		targetPosition = currentPosition;
+		targetCoord = currentCoord;
 
 		mCollider.enabled = true;
 	}
@@ -42,7 +42,8 @@ public class Pacman : MonoBehaviour
 		{
 			SetDirectionByInput();
 			RotateToDirection();
-			Move();
+			SetCoordForMove();
+			MoveFromCurrentToTargetCoord();
 		}
 		else
 		{
@@ -54,45 +55,50 @@ public class Pacman : MonoBehaviour
 		}
 	}
 
-	public void Move()
+	public void SetCoordForMove()
 	{
-		Vector2Int newTarget = InGameManager.Instance.CoordInRange(currentPosition + Global.directions[(int)newDirection]);
 		Vector2 position = transform.position;
-
-		if (InGameManager.Instance.IsCoordInRange(currentPosition)
-			&& (Global.Opposition(direction) == newDirection
-			|| (position.Approximately(currentPosition) && !InGameManager.Instance.IsObstacle(newTarget) && !InGameManager.Instance.IsPrisonEntrance(newTarget))))
+		if (Global.Opposition(direction) == newDirection)
 		{
 			direction = newDirection;
-			targetPosition = currentPosition;
+			Vector2Int swapTemp = targetCoord;
+			targetCoord = InGameManager.Instance.CoordInRange(currentCoord);
+			currentCoord = swapTemp;
 		}
-		else
+		else if (position.Approximately(targetCoord))
 		{
-			targetPosition = InGameManager.Instance.CoordInRange(currentPosition + Global.directions[(int)direction]);
+			Vector2Int currentTarget = InGameManager.Instance.CoordInRange(currentCoord + Global.directions[(int)direction]);
+			Vector2Int newTarget = InGameManager.Instance.CoordInRange(targetCoord + Global.directions[(int)newDirection]);
+			if (!InGameManager.Instance.IsObstacle(newTarget) && !InGameManager.Instance.IsPrisonEntrance(newTarget))
+			{
+				direction = newDirection;
+				currentCoord = targetCoord;
+				targetCoord = newTarget;
+			}
+			else if (!InGameManager.Instance.IsObstacle(currentTarget) && !InGameManager.Instance.IsPrisonEntrance(currentTarget))
+			{
+				currentCoord = targetCoord;
+				targetCoord = currentTarget;
+			}
 		}
+	}
 
-		if (!InGameManager.Instance.IsObstacle(targetPosition))
+	public void MoveFromCurrentToTargetCoord()
+	{
+		Vector2 position = transform.position;
+		if ((targetCoord - position).normalized == Global.directions[(int)direction])
 		{
-			if (targetPosition - currentPosition == Global.directions[(int)direction])
-			{
-				position = Vector2.MoveTowards(position, targetPosition, Time.deltaTime * speed);
-			}
-			else
-			{
-				position = Vector2.MoveTowards(position, position + Global.directions[(int)direction], Time.deltaTime * speed);
-			}
+			position = Vector2.MoveTowards(position, targetCoord, Time.deltaTime * speed);
+		}
+		else if (!position.Approximately(targetCoord))
+		{
+			position = Vector2.MoveTowards(position, position + Global.directions[(int)direction], Time.deltaTime * speed);
+		}
+		transform.position = position;
 
-			transform.position = position;
-			if (InGameManager.Instance.OutOfTileMap(transform.position))
-			{
-				transform.position = InGameManager.Instance.OppositePosition(transform.position);
-				currentPosition = targetPosition - Global.directions[(int)direction];
-			}
-
-			if (position.Approximately(targetPosition))
-			{
-				currentPosition = targetPosition;
-			}
+		if (InGameManager.Instance.OutOfTileMap(transform.position))
+		{
+			transform.position = InGameManager.Instance.OppositePosition(transform.position);
 		}
 	}
 
@@ -100,25 +106,26 @@ public class Pacman : MonoBehaviour
 	{
 		if (Input.GetKeyDown(KeyCode.UpArrow))
 		{
-			newDirection = Direction.Up;
+			SetDirection(Direction.Up);
 		}
 		else if (Input.GetKeyDown(KeyCode.RightArrow))
 		{
-			newDirection = Direction.Right;
+			SetDirection(Direction.Right);
 		}
 		else if (Input.GetKeyDown(KeyCode.DownArrow))
 		{
-			newDirection = Direction.Down;
+			SetDirection(Direction.Down);
 		}
 		else if (Input.GetKeyDown(KeyCode.LeftArrow))
 		{
-			newDirection = Direction.Left;
+			SetDirection(Direction.Left);
 		}
 	}
 
 	public void SetDirection(Direction direction)
 	{
 		newDirection = direction;
+		InGameManager.Instance.CheckSecretCode(newDirection);
 	}
 
 	public void RotateToDirection()
@@ -156,8 +163,11 @@ public class Pacman : MonoBehaviour
 			Ghost ghost = other.GetComponent<Ghost>();
 			if (ghost.CanKillPacman())
 			{
-				isDeath = true;
-				animator.SetTrigger("Death");
+				if (!InGameManager.Instance.PowerOverwhelming)
+				{
+					isDeath = true;
+					animator.SetTrigger("Death");
+				}
 			} else
 			{
 				ghost.SetState(GhostState.Death);

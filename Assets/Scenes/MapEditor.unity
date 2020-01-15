@@ -2321,7 +2321,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b54cca236734020458f8be7a8baa69b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tile: 6
+  tile: 7
 --- !u!1 &669391300
 GameObject:
   m_ObjectHideFlags: 0
@@ -4495,7 +4495,7 @@ GameObject:
   - component: {fileID: 1366270573}
   - component: {fileID: 1366270574}
   m_Layer: 5
-  m_Name: Wall
+  m_Name: Obstacle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4857,7 +4857,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: Wall
+  m_Text: Obstacle
 --- !u!222 &1445245637
 CanvasRenderer:
   m_ObjectHideFlags: 0

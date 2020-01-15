@@ -49,6 +49,11 @@ public class InGameManager : MonoBehaviour
 	[SerializeField] RawImage gameScreen = null;
 	RenderTexture screenTexture;
 
+	[SerializeField] Direction[] secretCode = { Direction.Up, Direction.Up, Direction.Up, Direction.Down, Direction.Down, Direction.Down };
+	int secretIndex = 0;
+	[SerializeField] Text logView = null;
+	public bool PowerOverwhelming { get; private set; } = false;
+
 	private void Awake()
 	{
 		if (Instance == null)
@@ -300,7 +305,7 @@ public class InGameManager : MonoBehaviour
 			ghosts[i].transform.position = ghostPosision;
 			ghosts[i].Init();
 		}
-		blinkyPosition = tileMap.CenterPosition();
+		blinkyPosition = tileMap.PrisonPosition();
 
 		SetLifeField();
 
@@ -448,9 +453,9 @@ public class InGameManager : MonoBehaviour
 		return current;
 	}
 
-	public Vector2Int GetNextTileToCenter(Vector2Int current, Direction direction, bool canReturn = false)
+	public Vector2Int GetNextTileToPrison(Vector2Int current, Direction direction, bool canReturn = false)
 	{
-		return GetNextTileToVector(current, tileMap.CenterPosition(), direction, canReturn);
+		return GetNextTileToVector(current, tileMap.PrisonPosition(), direction, canReturn);
 	}
 
 	public Vector2Int GetNextTileForWander(GhostPattern pattern, Vector2Int current, Direction direction, bool canReturn = false)
@@ -488,6 +493,7 @@ public class InGameManager : MonoBehaviour
 		floatingPosition.y += gameScreen.rectTransform.offsetMin.y;
 		FloatingText scoreValue = Instantiate(scoreValuePrefab);
 		scoreValue.transform.SetParent(canvas.transform);
+		scoreValue.transform.localScale = new Vector3(1, 1, 1);
 		scoreValue.GetComponent<RectTransform>().anchoredPosition = floatingPosition;
 		scoreValue.Print(ghostScores[eatenGhostCount].ToString());
 
@@ -614,5 +620,31 @@ public class InGameManager : MonoBehaviour
 			result.y = tileMap.MapSize().y - position.y - 1;
 		}
 		return result;
+	}
+
+	public void CheckSecretCode(Direction direction)
+	{
+		if (direction == secretCode[secretIndex])
+		{
+			secretIndex++;
+		}
+		else
+		{
+			secretIndex = 0;
+		}
+
+		if (secretIndex >= secretCode.Length)
+		{
+			PowerOverwhelming = !PowerOverwhelming;
+			if (PowerOverwhelming)
+			{
+				logView.text = "Cheat Mode On";
+			}
+			else
+			{
+				logView.text = "";
+			}
+			secretIndex = 0;
+		}
 	}
 }

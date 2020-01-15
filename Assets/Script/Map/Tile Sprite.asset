@@ -84,7 +84,7 @@ MonoBehaviour:
     type: 3}
   cookie: {fileID: 4063061920511473052, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
   pCookie: {fileID: 9064037868673475702, guid: 213b11d29603ab548bb712af5f7fd32a, type: 3}
-  player: {fileID: -1385835648374255064, guid: 00a95def03225bc40aaef66c82cfef45, type: 3}
+  player: {fileID: 21300000, guid: acd3a5ce5be326f438ffa7629d8c79ec, type: 3}
   alphabetSprites:
   - {fileID: 4596506743932242536, guid: 57e95bd145037754b85bd087f311002b, type: 3}
   - {fileID: 4670118941566451196, guid: 57e95bd145037754b85bd087f311002b, type: 3}

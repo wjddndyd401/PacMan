@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -8,8 +9,8 @@ public class GameManager : MonoBehaviour
 	[SerializeField] int currentStage = 1;
 	public ControlMode controlMode = ControlMode.TwoHand;
 
-	public int MaxLife { get { return maxLife; } private set { maxLife = value; } }
-	public int CurrentStage { get { return currentStage; } private set { currentStage = value; } }
+	public int MaxLife { get { return maxLife; } }
+	public int CurrentStage { get { return currentStage; } }
 
 	public static GameManager Instance { get; private set; } = null;
 
@@ -23,6 +24,14 @@ public class GameManager : MonoBehaviour
 		DontDestroyOnLoad(this);
 
 		controlMode = (ControlMode) PlayerPrefs.GetInt("ControlMode", (int)ControlMode.TwoHand);
+	}
+
+	private void Update()
+	{
+		if(Input.GetKey(KeyCode.Escape))
+		{
+			Application.Quit();
+		}
 	}
 
 	public void GoToNextStage()

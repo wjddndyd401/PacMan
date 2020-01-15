@@ -26,35 +26,10 @@ public class Title : MonoBehaviour
 	{
 		mainMenu.SetActive(false);
 		option.SetActive(true);
-
-		for (int i = 0; i < toggles.Length; i++)
-		{
-			if (toggles[i].ControlMode == GameManager.Instance.controlMode)
-			{
-				toggles[i].GetComponent<Toggle>().isOn = true;
-			}
-		}
 	}
 
 	public void StartGame()
 	{
 		SceneManager.LoadScene("GameScene");
-	}
-
-	public void SetControlMode()
-	{
-		Toggle activeToggle = null;
-		foreach (var toggle in optionGroup.ActiveToggles())
-		{
-			if (toggle.isOn)
-			{
-				activeToggle = toggle;
-			}
-		}
-
-		if(activeToggle != null)
-		{
-			GameManager.Instance.SetControlMode(activeToggle.GetComponent<OptionToggle>().ControlMode);
-		}
 	}
 }

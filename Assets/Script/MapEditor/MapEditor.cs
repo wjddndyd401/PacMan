@@ -106,20 +106,38 @@ public class MapEditor : MonoBehaviour
             if (activeToggle != null)
             {
                 tileMap.SetTile(coord, activeToggle.GetComponent<TileToggle>().ToogleTile);
+                RefreshTile(coord);
+            }
+        }
+    }
 
-                spriteList[coord.y, coord.x].sprite = NewMapSprite(new Vector2Int(coord.x, coord.y));
-                for (int i = 0; i < Global.directions.Length; i++)
+    void RefreshTile(Vector2Int coord)
+    {
+        spriteList[coord.y, coord.x].sprite = NewMapSprite(new Vector2Int(coord.x, coord.y));
+
+        if (tileMap.CheckTileType(coord, Tile.PlayerPosition))
+        {
+            for (int i = 0; i < spriteList.GetLength(0); i++)
+            {
+                for (int j = 0; j < spriteList.GetLength(1); j++)
                 {
-                    Vector2Int adjacentCoord = coord + Global.directions[i];
-                    if (tileMap.IsCoordInRange(adjacentCoord))
-                        spriteList[adjacentCoord.y, adjacentCoord.x].sprite = NewMapSprite(new Vector2Int(adjacentCoord.x, adjacentCoord.y));
+                    spriteList[i, j].sprite = NewMapSprite(new Vector2Int(j, i));
                 }
-                for (int i = 0; i < Global.diagonals.Length; i++)
-                {
-                    Vector2Int adjacentCoord = coord + Global.diagonals[i];
-                    if (tileMap.IsCoordInRange(adjacentCoord))
-                        spriteList[adjacentCoord.y, adjacentCoord.x].sprite = NewMapSprite(new Vector2Int(adjacentCoord.x, adjacentCoord.y));
-                }
+            }
+        }
+        else
+        {
+            for (int i = 0; i < Global.directions.Length; i++)
+            {
+                Vector2Int adjacentCoord = coord + Global.directions[i];
+                if (tileMap.IsCoordInRange(adjacentCoord))
+                    spriteList[adjacentCoord.y, adjacentCoord.x].sprite = NewMapSprite(new Vector2Int(adjacentCoord.x, adjacentCoord.y));
+            }
+            for (int i = 0; i < Global.diagonals.Length; i++)
+            {
+                Vector2Int adjacentCoord = coord + Global.diagonals[i];
+                if (tileMap.IsCoordInRange(adjacentCoord))
+                    spriteList[adjacentCoord.y, adjacentCoord.x].sprite = NewMapSprite(new Vector2Int(adjacentCoord.x, adjacentCoord.y));
             }
         }
     }
@@ -153,10 +171,6 @@ public class MapEditor : MonoBehaviour
         else if(tileMap.CheckTileType(coord, Tile.PlayerPosition))
         {
             returnValue = tileSpriteTable.PlayerSprite;
-        }
-        else if (tileMap.CheckTileType(coord, Tile.Prison))
-        {
-            returnValue = tileSpriteTable.CookieSprite;
         }
         else
         {

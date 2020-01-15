@@ -93,6 +93,8 @@ public class TileMap
 
 		maxX = tiles.GetLength(1);
 		maxY = tiles.GetLength(0);
+
+		playerPosition.x = -1;
 	}
 
 	public Tile[,] GetTiles()
@@ -105,9 +107,12 @@ public class TileMap
 		return tiles[coord.y, coord.x] == type;
 	}
 
-	public Vector2Int CenterPosition()
+	public Vector2Int PrisonPosition()
 	{
-		return new Vector2Int(tiles.GetLength(1) / 2, tiles.GetLength(0) / 2);
+		Vector2Int prisonCenter = (prisonMin + prisonMax);
+		prisonCenter.x /= 2;
+		prisonCenter.y /= 2;
+		return prisonCenter;
 	}
 
 	public Vector2Int PlayerPosition()
@@ -117,27 +122,19 @@ public class TileMap
 
 	public Vector2Int GhostPosition(GhostPattern name)
 	{
-		Vector2Int prisonCenter = (prisonMin + prisonMax);
-		prisonCenter.x /= 2;
-		prisonCenter.y /= 2;
-
 		if (name == GhostPattern.Blinky)
 		{
-			return prisonCenter + new Vector2Int(1, 0);
-		}
-		else if (name == GhostPattern.Pinky)
-		{
-			return prisonCenter;
+			return PrisonPosition() + new Vector2Int(1, 0);
 		}
 		else if (name == GhostPattern.Inky)
 		{
-			return prisonCenter + new Vector2Int(2, 0);
+			return PrisonPosition() + new Vector2Int(2, 0);
 		}
 		else if (name == GhostPattern.Clyde)
 		{
-			return prisonCenter - new Vector2Int(1, 0);
+			return PrisonPosition() - new Vector2Int(1, 0);
 		}
-		return CenterPosition();
+		return PrisonPosition();
 	}
 
 	public Vector2Int MapSize()
@@ -279,6 +276,15 @@ public class TileMap
 
 	public void SetTile(Vector2Int coord, Tile type)
 	{
+		if (type == Tile.PlayerPosition)
+		{
+			if (playerPosition.x >= 0)
+			{
+				tiles[playerPosition.y, playerPosition.x] = Tile.Obstacle;
+			}
+			playerPosition = coord;
+		}
+
 		tiles[coord.y, coord.x] = type;
 	}
 
