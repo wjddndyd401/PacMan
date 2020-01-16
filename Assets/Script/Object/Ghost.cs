@@ -71,7 +71,7 @@ public class Ghost : MonoBehaviour
 					direction = (Direction)i;
 			}
 
-			if (targetPosition - currentPosition == Global.directions[(int)direction])
+			if ((targetPosition - position).GetDirection() == direction)
 			{
 				position = Vector2.MoveTowards(position, targetPosition, Time.deltaTime * speed);
 			}
@@ -84,10 +84,9 @@ public class Ghost : MonoBehaviour
 			if (InGameManager.Instance.OutOfTileMap(transform.position))
 			{
 				transform.position = InGameManager.Instance.OppositePosition(transform.position);
-				currentPosition = targetPosition - Global.directions[(int)direction];
 			}
 
-			if (position.Approximately(targetPosition))
+			if(position.Approximately(targetPosition))
 			{
 				currentPosition = targetPosition;
 			}

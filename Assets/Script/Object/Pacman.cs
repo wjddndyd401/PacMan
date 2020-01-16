@@ -86,7 +86,7 @@ public class Pacman : MonoBehaviour
 	public void MoveFromCurrentToTargetCoord()
 	{
 		Vector2 position = transform.position;
-		if ((targetCoord - position).normalized == Global.directions[(int)direction])
+		if ((targetCoord - position).GetDirection() == direction)
 		{
 			position = Vector2.MoveTowards(position, targetCoord, Time.deltaTime * speed);
 		}

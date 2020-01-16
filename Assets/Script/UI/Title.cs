@@ -8,8 +8,6 @@ public class Title : MonoBehaviour
 {
 	[SerializeField] GameObject mainMenu = null;
 	[SerializeField] GameObject option = null;
-	[SerializeField] ToggleGroup optionGroup = null;
-	[SerializeField] OptionToggle[] toggles = null;
 
 	private void Start()
 	{

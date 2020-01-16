@@ -605,19 +605,26 @@ public class InGameManager : MonoBehaviour
 
 	public bool OutOfTileMap(Vector3 position)
 	{
-		return position.x <= -1 || position.y <= -1 || position.x >= tileMap.MapSize().x || position.y >= tileMap.MapSize().y;
+		return position.x < -1.2f || position.y < -1.2f || position.x > tileMap.MapSize().x + 0.2f || position.y > tileMap.MapSize().y + 0.2f;
 	}
 
 	public Vector3 OppositePosition(Vector3 position)
 	{
 		Vector3 result = position;
-		if (result.x <= -1 || result.x >= tileMap.MapSize().x)
+		if (result.x <= -1f) {
+			result.x = tileMap.MapSize().x;
+		} else if(result.x >= tileMap.MapSize().x)
 		{
-			result.x = tileMap.MapSize().x - position.x - 1;
+			result.x = -1f;
 		}
-		if (result.y <= -1 || result.y >= tileMap.MapSize().x)
+
+		if (result.y <= -1)
 		{
-			result.y = tileMap.MapSize().y - position.y - 1;
+			result.y = tileMap.MapSize().y;
+		}
+		else if (result.y >= tileMap.MapSize().y)
+		{
+			result.y = -1f;
 		}
 		return result;
 	}

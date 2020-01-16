@@ -142,7 +142,7 @@ public class TileMap
 		return new Vector2Int(tiles.GetLength(1), tiles.GetLength(0));
 	}
 
-	public bool[] IsAdjacentTile(Tile standard, Vector2Int coord)
+	public bool[] IsAdjacentTileBlocked(Tile standard, Vector2Int coord)
 	{
 		bool[] isBlocked = new bool[(int)Direction.End];
 		for (int i = 0; i < (int)Direction.End; i++)
@@ -161,7 +161,7 @@ public class TileMap
 
 	public AdjacentObstacle IndexOfObstacleSprite(Vector2Int coord)
 	{
-		bool[] isBlocked = IsAdjacentTile(Tile.Obstacle, coord);
+		bool[] isBlocked = IsAdjacentTileBlocked(Tile.Obstacle, coord);
 
 		if (tiles[coord.y, coord.x] == Tile.Obstacle)
 		{
@@ -212,7 +212,7 @@ public class TileMap
 
 	public AdjacentObstacle IndexOfPrisionSprite(Vector2Int coord)
 	{
-		bool[] isBlocked = IsAdjacentTile(Tile.PrisonWall, coord);
+		bool[] isBlocked = IsAdjacentTileBlocked(Tile.PrisonWall, coord);
 
 		if(coord.y == prisonMax.y && !isBlocked[2])
 		{

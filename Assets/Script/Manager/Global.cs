@@ -39,6 +39,33 @@ public static class Global
 		position.y += value;
 		a.anchoredPosition = position;
 	}
+
+	public static Direction GetDirection(this Vector2 vector)
+	{
+		if(Mathf.Abs(vector.y) >= Mathf.Abs(vector.x))
+		{
+			if (vector.y >= 0)
+			{
+				return Direction.Up;
+			}
+			else
+			{
+				return Direction.Down;
+			}
+		}
+
+		else
+		{
+			if (vector.x >= 0)
+			{
+				return Direction.Right;
+			}
+			else
+			{
+				return Direction.Left;
+			}
+		}
+	}
 }
 
 public enum Direction
